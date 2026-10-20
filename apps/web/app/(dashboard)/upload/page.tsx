@@ -153,23 +153,23 @@ export default function UploadPage() {
         )}
         {notice && <p className="text-sm text-good">{notice}</p>}
 
-        <div className="flex flex-wrap items-end gap-3">
-          <label className="text-sm">
+        <div className="flex flex-wrap items-end gap-x-6 gap-y-4">
+          <label className="flex flex-col gap-1.5 text-sm">
             Model routing
-            <select className="input mt-1 w-44" value={routing} onChange={(e) => setRouting(e.target.value)}>
+            <select className="input w-60" value={routing} onChange={(e) => setRouting(e.target.value)}>
               <option value="auto">Auto (cheap → strong)</option>
               <option value="cheap">Always cheap</option>
               <option value="strong">Always strong</option>
             </select>
           </label>
-          <label className="text-sm">
+          <label className="flex flex-col gap-1.5 text-sm">
             Prompt version
-            <select className="input mt-1 w-28" value={promptVersion} onChange={(e) => setPromptVersion(e.target.value)}>
+            <select className="input w-28" value={promptVersion} onChange={(e) => setPromptVersion(e.target.value)}>
               <option value="v1">v1</option>
               <option value="v2">v2</option>
             </select>
           </label>
-          <label className="flex items-center gap-2 pb-2 text-sm">
+          <label className="flex items-center gap-2 pb-2.5 text-sm">
             <input type="checkbox" checked={useBatch} onChange={(e) => setUseBatch(e.target.checked)} />
             Use batch API for large imports
           </label>
