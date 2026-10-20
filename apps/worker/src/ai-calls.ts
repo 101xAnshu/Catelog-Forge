@@ -80,7 +80,7 @@ export async function handleProviderError(err: unknown, worker: Worker, storeId:
     throw Worker.RateLimitError();
   }
   if (err instanceof AiAuthError) {
-    await pauseImports(storeId, 5 * 60_000, "AI key rejected — check GROQ_API_KEY");
+    await pauseImports(storeId, 5 * 60_000, "AI key rejected — check OPENCODE_API_KEY / GROQ_API_KEY");
     await worker.rateLimit(5 * 60_000);
     throw Worker.RateLimitError();
   }

@@ -21,7 +21,7 @@ export interface CompletionResult {
 }
 
 export interface AiProvider {
-  readonly name: "groq" | "fake";
+  readonly name: "opencode" | "groq" | "fake";
   modelFor(tier: Tier): string;
   complete(req: CompletionRequest): Promise<CompletionResult>;
 }

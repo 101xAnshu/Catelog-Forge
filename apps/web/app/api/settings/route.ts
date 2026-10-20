@@ -1,3 +1,4 @@
+import { isDemoMode } from "@cf/ai";
 import { and, eq, notInArray } from "@cf/db/orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -23,7 +24,7 @@ export const GET = withStore(async (_req, ctx) => {
     store: { id: s.id, name: s.name, slug: s.slug, baseCurrency: s.baseCurrency, webhookUrl: s.webhookUrl, webhookSecret: s.webhookSecret, settings: s.settings },
     countryLocales: locales.map((l) => ({ countryCode: l.countryCode, locale: l.locale })),
     apiKeys: keys,
-    demoMode: !process.env.GROQ_API_KEY,
+    demoMode: isDemoMode(),
   });
 });
 

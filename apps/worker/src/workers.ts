@@ -1,4 +1,4 @@
-import { Job, QUEUES, Worker, redisConnection, type BuildJob, type ImportJob, type TranslateJob, type WebhookJob } from "@cf/queue";
+import { Job, QUEUES, Worker, clearRateLimits, redisConnection, type BuildJob, type ImportJob, type TranslateJob, type WebhookJob } from "@cf/queue";
 import { wdb } from "./db";
 import { failImport } from "./progress";
 import { reconcile } from "./reconciler";
@@ -26,6 +26,7 @@ async function isCancelled(importId: string | null | undefined): Promise<boolean
 export async function startWorkers(opts: { reconcileEveryMs?: number; log?: boolean } = {}): Promise<RunningWorkers> {
   const connection = redisConnection();
   const log = opts.log ?? true;
+  await clearRateLimits();
   const common = { connection, autorun: true, stalledInterval: 15_000, maxStalledCount: 3, lockDuration: 120_000 };
 
   const importWorker = new Worker<ImportJob>(

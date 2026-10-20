@@ -90,3 +90,20 @@ export async function removeImportJobs(importId: string): Promise<number> {
   }
   return removed;
 }
+
+/**
+ * Deterministic ids dedupe live jobs, but a *finished* job (completed, or failed after its attempts) keeps
+ * its id for hours and would silently swallow a deliberate re-queue. Clear those so the add goes through.
+ */
+export async function clearFinishedJob(name: (typeof QUEUES)[keyof typeof QUEUES], jobId: string): Promise<void> {
+  const job = await getQueue(name).getJob(safeJobId(jobId));
+  if (!job) return;
+  const state = await job.getState();
+  if (state === "completed" || state === "failed") await job.remove().catch(() => undefined);
+}
+
+/** Queue-wide rate-limit pauses belong to the previous worker session (and possibly another provider). */
+export async function clearRateLimits(): Promise<void> {
+  const redis = redisConnection();
+  for (const name of Object.values(QUEUES)) await redis.del(`bull:${name}:limiter`);
+}

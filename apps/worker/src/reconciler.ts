@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import {
-  enqueueBuild, enqueueTranslate, getQueue, QUEUES, redisConnection, safeJobId,
+  clearFinishedJob, enqueueBuild, enqueueTranslate, getQueue, QUEUES, redisConnection, safeJobId,
   type BuildJob, type ImportJob, type ImportStage, type TranslateJob,
 } from "@cf/queue";
 import { wdb } from "./db";
@@ -69,6 +69,7 @@ export async function reconcile(): Promise<{ imports: number; builds: number; tr
       .filter((id) => !buildCovered.has(id));
     for (let i = 0; i < stuck.length; i += BUILD_BATCH) {
       const ids = stuck.slice(i, i + BUILD_BATCH);
+      await clearFinishedJob(QUEUES.build, idFor(`build:${imp.id}:resume`, ids));
       await enqueueBuild({ importId: imp.id, storeId: imp.store_id, productIds: ids, kind: "build" }, idFor(`build:${imp.id}:resume`, ids));
       builds++;
     }
@@ -82,6 +83,7 @@ export async function reconcile(): Promise<{ imports: number; builds: number; tr
       await sql`update products set status = 'processing', built_input_hash = null where id in ${sql(orphanRows)}`;
       for (let i = 0; i < orphanRows.length; i += BUILD_BATCH) {
         const ids = orphanRows.slice(i, i + BUILD_BATCH);
+        await clearFinishedJob(QUEUES.build, idFor(`build:${imp.id}:regroup`, ids));
         await enqueueBuild({ importId: imp.id, storeId: imp.store_id, productIds: ids, kind: "build" }, idFor(`build:${imp.id}:regroup`, ids));
         builds++;
       }
@@ -93,6 +95,7 @@ export async function reconcile(): Promise<{ imports: number; builds: number; tr
       .filter((id) => !translateCovered.has(id));
     for (let i = 0; i < pendingTr.length; i += 20) {
       const ids = pendingTr.slice(i, i + 20);
+      await clearFinishedJob(QUEUES.translate, idFor(`translate:${imp.id}:resume`, ids));
       await enqueueTranslate({ storeId: imp.store_id, importId: imp.id, productIds: ids }, idFor(`translate:${imp.id}:resume`, ids));
       translationJobs++;
     }

@@ -2,11 +2,11 @@ import { loadRootEnv } from "./env";
 
 loadRootEnv();
 
-const { isDemoMode } = await import("@cf/ai");
+const { providerName } = await import("@cf/ai");
 const { startWorkers, shutdownConnections } = await import("./workers");
 
 const running = await startWorkers();
-console.info(`CatalogForge worker started (pid ${process.pid}, AI: ${isDemoMode() ? "demo/fake provider" : "groq"})`);
+console.info(`CatalogForge worker started (pid ${process.pid}, AI: ${providerName()})`);
 
 let stopping = false;
 async function shutdown(signal: string): Promise<void> {
