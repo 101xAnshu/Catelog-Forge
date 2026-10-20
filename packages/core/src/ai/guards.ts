@@ -87,7 +87,11 @@ export function applyGuards(
       claims.push({ text: c.text, sourceRow: null, sourceColumn: null, sourceQuote: c.quote, verified: false, rejectedReason: "Quote not found in source" });
       continue;
     }
-    const support = claimSupportedByQuote(c.text, c.quote);
+    // Check the quote and the whole cited cell: quoting "frost-proof" out of "not frost-proof" must still fail.
+    const quoteSupport = claimSupportedByQuote(c.text, c.quote);
+    const support = quoteSupport.ok && phraseStatus(c.text, cell) === "negated"
+      ? { ok: false, reason: "Source negates this claim" }
+      : quoteSupport;
     claims.push({
       text: c.text,
       sourceRow,

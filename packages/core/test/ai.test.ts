@@ -38,6 +38,14 @@ describe("applyGuards", () => {
   test("negated claim rejected", () => {
     expect(r.claims.find((c) => c.text === "frost-proof")?.rejectedReason).toBe("Source negates this claim");
   });
+  test("negated claim rejected when the quote omits the negation", () => {
+    const narrow = applyGuards(group, {
+      ...ai,
+      claims: [{ text: "frost-proof", quote: "frost-proof", row: 14, column: "Notes" }],
+    }, { handle: "x" });
+    expect(narrow.claims[0]?.verified).toBe(false);
+    expect(narrow.claims[0]?.rejectedReason).toBe("Source negates this claim");
+  });
   test("invented quote rejected", () => {
     expect(r.claims.find((c) => c.text === "handmade")?.rejectedReason).toBe("Quote not found in source");
   });
