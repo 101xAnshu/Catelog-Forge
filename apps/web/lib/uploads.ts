@@ -1,4 +1,4 @@
-import { and, eq } from "@cf/db/orm";
+import { and, eq, inArray } from "@cf/db/orm";
 import { createHash, randomUUID } from "node:crypto";
 import { createWriteStream } from "node:fs";
 import { mkdir, rm } from "node:fs/promises";
@@ -135,31 +135,44 @@ export async function createImportFromForm(
     const fileSha256 = createHash("sha256").update(parts.sort().join(":")).digest("hex");
 
     const db = web().db;
-    const [created] = await db
-      .insert(imports)
-      .values({
-        storeId,
-        fileSha256,
-        filename: sheet.name.slice(0, 200),
-        sheetKey,
-        photosKey,
-        photoKeys,
-        settings,
-        source,
-        counts: { total: 0, pending: 0, done: 0, needs_review: 0, failed: 0, products: 0, orphan_photos: 0 },
-      })
-      .onConflictDoNothing({ target: [imports.storeId, imports.fileSha256] })
-      .returning({ id: imports.id, status: imports.status });
+    const insert = () =>
+      db
+        .insert(imports)
+        .values({
+          storeId,
+          fileSha256,
+          filename: sheet.name.slice(0, 200),
+          sheetKey,
+          photosKey,
+          photoKeys,
+          settings,
+          source,
+          counts: { total: 0, pending: 0, done: 0, needs_review: 0, failed: 0, products: 0, orphan_photos: 0 },
+        })
+        .onConflictDoNothing({ target: [imports.storeId, imports.fileSha256] })
+        .returning({ id: imports.id, status: imports.status });
 
+    let [created] = await insert();
     if (!created) {
-      await rm(storagePath(uploadDir), { recursive: true, force: true });
       const [existing] = await db
         .select({ id: imports.id, status: imports.status })
         .from(imports)
         .where(and(eq(imports.storeId, storeId), eq(imports.fileSha256, fileSha256)))
         .limit(1);
-      if (!existing) throw new HttpError(409, "DUPLICATE_RACE", "This file is being imported; refresh in a moment.");
-      return { id: existing.id, duplicate: true, status: existing.status };
+      // A cancelled or failed import must not block uploading the same file again: it keeps its history
+      // under a superseded hash and the new upload runs (products still upsert, so nothing is duplicated).
+      if (existing && (existing.status === "cancelled" || existing.status === "failed")) {
+        await db
+          .update(imports)
+          .set({ fileSha256: `${fileSha256}:superseded:${existing.id}` })
+          .where(and(eq(imports.id, existing.id), inArray(imports.status, ["cancelled", "failed"])));
+        [created] = await insert();
+      }
+      if (!created) {
+        await rm(storagePath(uploadDir), { recursive: true, force: true });
+        if (!existing) throw new HttpError(409, "DUPLICATE_RACE", "This file is being imported; refresh in a moment.");
+        return { id: existing.id, duplicate: true, status: existing.status };
+      }
     }
     await enqueueImportStage({ importId: created.id, storeId, stage: "parse" });
     return { id: created.id, duplicate: false, status: created.status };
