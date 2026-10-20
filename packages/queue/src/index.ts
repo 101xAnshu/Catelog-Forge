@@ -50,23 +50,29 @@ export function getQueue<T>(name: (typeof QUEUES)[keyof typeof QUEUES]): Queue<T
   return q as Queue<T>;
 }
 
+/** BullMQ rejects ":" in custom ids; every id passes through here so callers can use readable `a:b:c` ids. */
+export const safeJobId = (id: string): string => id.replaceAll(":", "_");
+
 /** Deterministic job ids make double-enqueue (retries, reconciler, double clicks) a no-op. */
 export async function enqueueImportStage(job: ImportJob): Promise<void> {
-  await getQueue<ImportJob>(QUEUES.import).add(job.stage, job, { jobId: `${job.importId}:${job.stage}` });
+  await getQueue<ImportJob>(QUEUES.import).add(job.stage, job, { jobId: safeJobId(`${job.importId}:${job.stage}`) });
 }
 
 export async function enqueueBuild(job: BuildJob, jobId: string): Promise<void> {
-  await getQueue<BuildJob>(QUEUES.build).add(job.kind, job, { jobId });
+  await getQueue<BuildJob>(QUEUES.build).add(job.kind, job, { jobId: safeJobId(jobId) });
 }
 
 export async function enqueueTranslate(job: TranslateJob, jobId: string): Promise<void> {
-  await getQueue<TranslateJob>(QUEUES.translate).add("translate", job, { jobId });
+  await getQueue<TranslateJob>(QUEUES.translate).add("translate", job, { jobId: safeJobId(jobId) });
 }
 
 export async function enqueueWebhook(eventId: string): Promise<void> {
-  await getQueue<WebhookJob>(QUEUES.webhook).add("deliver", { eventId }, { jobId: `webhook:${eventId}`, attempts: 8, backoff: { type: "exponential", delay: 5000 } });
+  await getQueue<WebhookJob>(QUEUES.webhook).add("deliver", { eventId }, { jobId: safeJobId(`webhook:${eventId}`), attempts: 8, backoff: { type: "exponential", delay: 5000 } });
 }
 
 export async function publishProgress(storeId: string, event: ProgressEvent): Promise<void> {
   await redisConnection().publish(progressChannel(storeId), JSON.stringify(event));
 }
+
+/** Re-exported so apps share one bullmq instance/version. */
+export { Worker, Job } from "bullmq";
