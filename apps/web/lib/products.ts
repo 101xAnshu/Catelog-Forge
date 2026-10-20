@@ -88,12 +88,12 @@ export async function listProducts(storeId: string, q: ProductQuery) {
         updatedAt: products.updatedAt,
         model: products.model,
         version: products.version,
-        variantCount: sql<number>`(select count(*)::int from ${variants} v where v.product_id = ${products.id})`,
-        firstSku: sql<string | null>`(select v.sku from ${variants} v where v.product_id = ${products.id} order by v.position limit 1)`,
-        priceFrom: sql<number | null>`(select min(v.price_cents)::int from ${variants} v where v.product_id = ${products.id})`,
-        currency: sql<string | null>`(select v.currency from ${variants} v where v.product_id = ${products.id} and v.currency is not null limit 1)`,
-        thumbKey: sql<string | null>`(select a.thumb_key from ${assets} a where a.product_id = ${products.id} and a.status = 'ok' order by a.filename limit 1)`,
-        staleTranslations: sql<number>`(select count(*)::int from ${translations} t where t.product_id = ${products.id} and t.state in ('out_of_date','missing'))`,
+        variantCount: sql<number>`(select count(*)::int from ${variants} v where v.product_id = "products"."id")`,
+        firstSku: sql<string | null>`(select v.sku from ${variants} v where v.product_id = "products"."id" order by v.position limit 1)`,
+        priceFrom: sql<number | null>`(select min(v.price_cents)::int from ${variants} v where v.product_id = "products"."id")`,
+        currency: sql<string | null>`(select v.currency from ${variants} v where v.product_id = "products"."id" and v.currency is not null limit 1)`,
+        thumbKey: sql<string | null>`(select a.thumb_key from ${assets} a where a.product_id = "products"."id" and a.status = 'ok' order by a.filename limit 1)`,
+        staleTranslations: sql<number>`(select count(*)::int from ${translations} t where t.product_id = "products"."id" and t.state in ('out_of_date','missing'))`,
       })
       .from(products)
       .where(where)
