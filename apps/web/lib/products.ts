@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, ilike, inArray, isNull, or, sql, type SQL } from "@cf/db/orm";
-import { assets, claims, importRows, productFields, products, translations, variants } from "@cf/db";
+import { aiCalls, assets, claims, importRows, productFields, products, translations, variants } from "@cf/db";
 import { web } from "./db";
 
 export const PAGE_SIZES = [10, 25, 50, 100] as const;
@@ -113,7 +113,7 @@ export async function getProductDetail(storeId: string, id: string) {
     .where(and(eq(products.storeId, storeId), eq(products.id, id)))
     .limit(1);
   if (!product) return null;
-  const [fields, vars, cls, trs, rows, photos] = await Promise.all([
+  const [fields, vars, cls, trs, rows, photos, usage] = await Promise.all([
     db.select().from(productFields).where(eq(productFields.productId, id)).orderBy(productFields.fieldPath),
     db.select().from(variants).where(eq(variants.productId, id)).orderBy(variants.position),
     db.select().from(claims).where(eq(claims.productId, id)),
@@ -136,6 +136,27 @@ export async function getProductDetail(storeId: string, id: string) {
       .from(assets)
       .where(and(eq(assets.storeId, storeId), eq(assets.productId, id), eq(assets.status, "ok")))
       .orderBy(assets.filename),
+    // Every AI call that included this product (a batch call counts for each product in it).
+    db
+      .select({
+        model: aiCalls.model,
+        calls: sql<number>`count(*)::int`,
+        inputTokens: sql<number>`coalesce(sum(${aiCalls.inputTokens}), 0)::int`,
+        outputTokens: sql<number>`coalesce(sum(${aiCalls.outputTokens}), 0)::int`,
+        costMicros: sql<number>`coalesce(sum(${aiCalls.costMicros}), 0)::bigint`,
+      })
+      .from(aiCalls)
+      .where(and(eq(aiCalls.storeId, storeId), sql`${aiCalls.productIds} @> ${JSON.stringify([id])}::jsonb`))
+      .groupBy(aiCalls.model)
+      .orderBy(aiCalls.model),
   ]);
-  return { product, fields, variants: vars, claims: cls, translations: trs, sourceRows: rows, photos };
+  const byModel = usage.map((u) => ({ model: u.model, calls: Number(u.calls), costUsd: Number(u.costMicros) / 1e6 }));
+  const aiUsage = {
+    calls: byModel.reduce((n, u) => n + u.calls, 0),
+    inputTokens: usage.reduce((n, u) => n + Number(u.inputTokens), 0),
+    outputTokens: usage.reduce((n, u) => n + Number(u.outputTokens), 0),
+    costUsd: byModel.reduce((n, u) => n + u.costUsd, 0),
+    byModel,
+  };
+  return { product, fields, variants: vars, claims: cls, translations: trs, sourceRows: rows, photos, aiUsage };
 }

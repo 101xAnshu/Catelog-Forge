@@ -30,7 +30,10 @@ interface Detail {
   translations: Array<{ fieldPath: string; locale: "de" | "fr"; value: string | null; origin: "ai" | "manual"; state: string; error: string | null }>;
   sourceRows: Array<{ importId: string; rowNumber: number; raw: Record<string, string>; issues: Array<{ code: string; message: string; severity: string; field?: string }>; status: string; reason: string | null }>;
   photos: Array<{ id: string; filename: string; thumbKey: string | null; storageKey: string; matchMethod: string | null }>;
+  aiUsage: { calls: number; inputTokens: number; outputTokens: number; costUsd: number; byModel: Array<{ model: string; calls: number; costUsd: number }> };
 }
+
+const usd = (n: number) => (n < 0.01 && n > 0 ? `$${n.toFixed(5)}` : `$${n.toFixed(4)}`);
 
 const FIELD_ORDER = ["title", "description_html", "category", "tags", "seo_title", "seo_description"];
 const LONG = new Set(["description_html", "seo_description"]);
@@ -230,6 +233,30 @@ export default function ProductReviewPage() {
                   )),
                 )}
               </ul>
+            )}
+          </div>
+
+          <div className="card p-4">
+            <h2 className="mb-2 font-semibold">AI usage</h2>
+            {d.aiUsage.calls === 0 ? (
+              <p className="text-sm text-muted">No AI calls recorded for this product.</p>
+            ) : (
+              <>
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm tabular-nums sm:grid-cols-4">
+                  <div><dt className="text-muted">Calls</dt><dd>{d.aiUsage.calls}</dd></div>
+                  <div><dt className="text-muted">Tokens in</dt><dd>{d.aiUsage.inputTokens.toLocaleString()}</dd></div>
+                  <div><dt className="text-muted">Tokens out</dt><dd>{d.aiUsage.outputTokens.toLocaleString()}</dd></div>
+                  <div><dt className="text-muted">Cost</dt><dd>{usd(d.aiUsage.costUsd)}</dd></div>
+                </dl>
+                <ul className="mt-2 space-y-0.5 text-xs text-muted">
+                  {d.aiUsage.byModel.map((m) => (
+                    <li key={m.model}>
+                      <code>{m.model}</code> · {m.calls} call{m.calls === 1 ? "" : "s"} · {usd(m.costUsd)}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-xs text-muted">Batch calls count once per product they include.</p>
+              </>
             )}
           </div>
         </section>

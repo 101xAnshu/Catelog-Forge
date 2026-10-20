@@ -17,7 +17,6 @@ if (process.env.STORAGE_DIR && !process.env.STORAGE_DIR.startsWith("/")) {
 const config: NextConfig = {
   transpilePackages: ["@cf/core", "@cf/db", "@cf/queue", "@cf/ai"],
   serverExternalPackages: ["postgres", "bullmq", "ioredis", "sharp"],
-  experimental: { serverActions: { bodySizeLimit: "50mb" } },
   typedRoutes: false,
   devIndicators: false,
   webpack(cfg, { isServer }) {

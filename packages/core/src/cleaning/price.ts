@@ -48,6 +48,17 @@ export function parsePrice(
   }
   const original = String(input).trim();
 
+  // "41-45", "22 - 28 €", "12–15", "10 bis 12": a variant needs one price, so never pick an end of the range.
+  const range = original.match(/^\D*?(\d+(?:[.,]\d+)?)\s*(?:-|–|—|\bbis\b|\bto\b)\s*(\d+(?:[.,]\d+)?)\D*$/i);
+  if (range && !/^\s*-/.test(original)) {
+    return {
+      money: null,
+      issues: [issue("PRICE_RANGE", "error", `Price is a range (${range[1]}-${range[2]}); a variant needs one price`, { field, original })],
+    };
+  }
+  // "ca. 23,49 €", "approx. 12.50", "~15 €": keep the number but make a human confirm it.
+  const approximate = /^\s*(?:ca\.?|circa|approx\.?|approximately|about|around|etwa|env\.?|environ|~|≈)\s*/i.test(original);
+
   let currency = normalizeCurrencyCode(opts.currencyHint ?? null);
   if (!currency) {
     for (const [re, code] of SYMBOLS) {
@@ -139,6 +150,9 @@ export function parsePrice(
       money: null,
       issues: [...issues, issue("PRICE_IMPLAUSIBLE", "error", `Price "${original}" is implausibly high`, { field, original })],
     };
+  }
+  if (approximate) {
+    issues.push(issue("PRICE_APPROXIMATE", "error", `Approximate price "${original}" — confirm the exact price`, { field, original }));
   }
   return { money: { cents, currency }, issues };
 }

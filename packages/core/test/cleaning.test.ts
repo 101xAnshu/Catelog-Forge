@@ -36,6 +36,28 @@ describe("parsePrice", () => {
       if (cents === null) expect(r.issues.some((i) => i.severity === "error")).toBe(true);
     });
   }
+  const flagged: Array<[string, number | null, string]> = [
+    ["ca. 23,49 €", 2349, "PRICE_APPROXIMATE"],
+    ["approx. 12.50", 1250, "PRICE_APPROXIMATE"],
+    ["~15 €", 1500, "PRICE_APPROXIMATE"],
+    ["circa 9,99", 999, "PRICE_APPROXIMATE"],
+    ["41-45", null, "PRICE_RANGE"],
+    ["22 - 28 €", null, "PRICE_RANGE"],
+    ["12–15", null, "PRICE_RANGE"],
+    ["-5", null, "PRICE_NEGATIVE"],
+  ];
+  for (const [input, cents, code] of flagged) {
+    test(`${JSON.stringify(input)} → ${cents} with ${code}`, () => {
+      const r = parsePrice(input, { defaultCurrency: "EUR" });
+      expect(r.money?.cents ?? null).toBe(cents);
+      expect(r.issues.find((i) => i.code === code)?.severity).toBe("error");
+    });
+  }
+  test("12,- is a whole price, not a range", () => {
+    const r = parsePrice("12,-", { defaultCurrency: "EUR" });
+    expect(r.money?.cents).toBe(1200);
+    expect(r.issues.some((i) => i.code === "PRICE_RANGE")).toBe(false);
+  });
   test("ambiguous $ is flagged", () => {
     expect(parsePrice("$5", { defaultCurrency: "EUR" }).issues[0]?.code).toBe("CURRENCY_AMBIGUOUS");
   });

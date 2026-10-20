@@ -1,6 +1,10 @@
 # One image for both services. ROLE=web (default) runs Next.js, ROLE=worker runs the BullMQ worker,
 # ROLE=all runs both in one container (single volume for uploads; simplest Railway setup).
-FROM oven/bun:1.3.2 AS deps
+# Next.js runs on real Node (its build crashes under Bun's node shim); Bun installs deps and runs the worker.
+FROM node:22-bookworm-slim AS base
+COPY --from=oven/bun:1.3.2 /usr/local/bin/bun /usr/local/bin/bun
+
+FROM base AS deps
 WORKDIR /app
 COPY package.json bun.lock ./
 COPY apps/web/package.json apps/web/
@@ -11,14 +15,14 @@ COPY packages/queue/package.json packages/queue/
 COPY packages/ai/package.json packages/ai/
 RUN bun install --frozen-lockfile
 
-FROM oven/bun:1.3.2 AS build
+FROM base AS build
 WORKDIR /app
 COPY --from=deps /app /app
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN cd apps/web && ./node_modules/.bin/next build
 
-FROM oven/bun:1.3.2 AS runtime
+FROM base AS runtime
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 ROLE=web PORT=3000
 COPY --from=build /app /app
