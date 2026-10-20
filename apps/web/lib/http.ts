@@ -24,6 +24,8 @@ export function withStore<P = Record<string, string>>(handler: Handler<P>, opts:
     } catch (err) {
       if (err instanceof HttpError) return errorResponse(err.status, err.code, err.message, err.details);
       if (err instanceof ZodError) return errorResponse(400, "INVALID_INPUT", "Invalid request", err.flatten());
+      // req.json() on a malformed body is the client's mistake, not a server error.
+      if (err instanceof SyntaxError) return errorResponse(400, "INVALID_JSON", "Request body is not valid JSON.");
       console.error("[api]", err);
       return errorResponse(500, "INTERNAL", "Something went wrong. Please retry.");
     }

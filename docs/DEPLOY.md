@@ -1,41 +1,71 @@
-# Deploying CatalogForge (Railway + Supabase)
+# Deploying CatalogForge
 
-The same Docker image runs both services; `ROLE` picks which one.
+One Docker image runs everything. On start it:
+1. applies database migrations,
+2. seeds the demo store (`SEED_DEMO=true`),
+3. starts the worker and the web app.
 
-| Service | Where | Settings |
+Uploads live on one volume mounted at `/data`. You only provide Postgres, Redis and an AI key.
+
+## Required environment variables
+
+| Variable | Value |
+|---|---|
+| `DATABASE_URL` | Postgres connection string. For Supabase use the **session pooler** URL (port 5432) and append `?sslmode=require`. |
+| `REDIS_URL` | Redis connection string (`redis://` or `rediss://`). Redis must use `maxmemory-policy noeviction` (BullMQ requirement). |
+| `OPENCODE_API_KEY` | Your OpenCode Go key. Leave it empty (with no `GROQ_API_KEY`) to run in demo mode with the fake AI provider. |
+| `APP_URL` | Public URL of the app, e.g. `https://catalogforge.up.railway.app`. Used in API responses and exports. |
+
+## Optional variables (defaults are already set in the image)
+
+| Variable | Default | Notes |
 |---|---|---|
-| `web` | Railway (from this repo, `Dockerfile`) | `ROLE=web`, public domain, health check `/store` |
-| `worker` | Railway (same repo/image) | `ROLE=worker`, **2 replicas**, no public domain |
-| Redis | Railway Redis plugin | AOF persistence is on by default |
-| Postgres | Supabase (or the Railway Postgres plugin) | Use the *session* pooler URL (port 5432); the transaction pooler breaks `LISTEN`/prepared statements |
+| `SEED_DEMO` | `true` | Creates `demo@catalogforge.dev` / `demo1234`. Set `false` on a public instance you don't want open; then sign up at `/signup`. |
+| `ROLE` | `all` | `all` = web + worker in one container. `web` / `worker` split them, but both then need the same `STORAGE_DIR`. |
+| `STORAGE_DIR` | `/data/storage` | Mount a persistent volume at `/data`. |
+| `GROQ_API_KEY` | – | Fallback provider, used only when there is no OpenCode key. |
+| `AI_PROVIDER` | auto | Force `opencode`, `groq` or `fake`. |
+| `OPENCODE_MODELS_CHEAP` / `_STRONG` / `_VISION` | built in | Comma-separated model chains; see `.env.example`. |
+| `BUILD_BATCH_SIZE` | `1` | Products per AI build call. 1 is fastest with OpenCode Go. |
+| `WORKER_BUILD_CONCURRENCY` / `WORKER_TRANSLATE_CONCURRENCY` | `32` | Parallel AI calls. OpenCode Go has no per-minute limit. |
+| `DB_POOL_WORKER` | `16` | Worker DB connections. Keep under your Postgres plan's connection limit. |
 
-## Environment variables (both services)
+Health check: `GET /api/health` returns 200 when Postgres and Redis answer.
+
+## Option A: Railway
+
+1. Push this repo to GitHub, then in Railway choose **New Project → Deploy from GitHub repo**. It builds the `Dockerfile`; `railway.json` sets the health check and restart policy.
+2. In the project, **+ New → Database → PostgreSQL**, then **+ New → Database → Redis**.
+3. On the app service, open **Variables** and add:
+   ```
+   DATABASE_URL=${{Postgres.DATABASE_URL}}
+   REDIS_URL=${{Redis.REDIS_URL}}
+   OPENCODE_API_KEY=<your key>
+   APP_URL=https://${{RAILWAY_PUBLIC_DOMAIN}}
+   ```
+4. On the app service, open **Settings → Volumes → Add volume** and set the mount path to `/data`.
+5. Under **Settings → Networking**, generate a public domain. Railway sets `PORT`.
+6. Deploy. Open `https://<domain>/login` and sign in with `demo@catalogforge.dev` / `demo1234`.
+
+Railway's Redis plugin ships with AOF persistence. If you bring your own Redis, set `maxmemory-policy noeviction`.
+
+## Option B: Any server with Docker (VPS)
+
+```bash
+cp .env.example .env                       # set OPENCODE_API_KEY and APP_URL
+docker compose -f docker-compose.prod.yml up -d --build
 ```
-DATABASE_URL=postgres://...            # Supabase session pooler URL
-REDIS_URL=redis://...                  # Railway Redis internal URL
-OPENCODE_API_KEY=<your-opencode-go-key> # default AI provider; leave all AI keys empty for demo mode
-GROQ_API_KEY=                          # optional fallback provider (used only without an OpenCode key)
-AI_PROVIDER=                           # optional override: opencode | groq | fake
-STORAGE_DIR=/data/storage              # see "File storage" below
-APP_URL=https://<your-web-domain>
-WORKER_BUILD_CONCURRENCY=8             # worker only; OpenCode Go has no per-minute limit
-WORKER_TRANSLATE_CONCURRENCY=8         # worker only
-```
 
-Optional per-tier model chains (`OPENCODE_MODELS_CHEAP`, `OPENCODE_MODELS_STRONG`, `OPENCODE_MODELS_VISION`) are listed in `.env.example`. OpenCode Go requires an `x-opencode-session` header on every request; the provider sends it automatically.
+`docker-compose.prod.yml` runs the app, Postgres 16 and Redis 7 (AOF + `noeviction`), each with a persistent volume. The database and Redis URLs are wired inside the compose file. Put a TLS proxy such as Caddy or nginx in front of port 3000.
 
-## File storage
-Uploads are written by `web` and read by `worker`, so both need the same storage:
-- **Simplest:** run web and worker in one Railway service with `ROLE=all` on a mounted volume. Otherwise point `STORAGE_DIR` at a shared volume.
-- **Production:** swap the local-disk storage adapter for S3/Supabase Storage (one interface in `apps/web/lib/storage` and `apps/worker`).
+## Option C: Render / Fly / other Docker hosts
 
-## Steps
-1. Create a Supabase project. Copy the session-pooler connection string.
-2. `railway init`, then add the Redis plugin.
-3. Create service `web` from the repo with the variables above and `ROLE=web`. Migrations run on boot.
-4. Create service `worker` from the same repo with `ROLE=worker` and replicas = 2.
-5. Seed once: `railway run --service web bun packages/db/src/seed.ts`.
-6. Open `https://<domain>/login`. Log in with `demo@catalogforge.dev` / `demo1234`.
+Deploy the `Dockerfile` as a web service on port 3000 with a persistent disk at `/data`. Add managed Postgres and Redis, set the four required variables, and use `/api/health` as the health check.
 
-## Restart demo on Railway
-Use **Restart** on the `worker` service while an import is running. The import shows `paused`/stalled jobs, then resumes when the worker boots. The reconciler re-enqueues unfinished stages from Postgres.
+## Scaling out
+
+For more AI throughput, raise the concurrency variables first. To run several worker containers, use `ROLE=web` for one service and `ROLE=worker` for the others, and point every `STORAGE_DIR` at shared storage (a shared volume, or swap the local-disk adapter in `apps/web/lib/storage.ts` and `apps/worker/src/storage.ts` for S3). Jobs, retries and restarts are coordinated through Postgres and Redis, so any number of workers is safe.
+
+## Restart demo on a deployment
+
+Start a large import, then restart the service (Railway: **Deployments → Restart**). On boot the worker's reconciler rebuilds the queue from Postgres and the import continues. The row counts still add up, with no duplicates.

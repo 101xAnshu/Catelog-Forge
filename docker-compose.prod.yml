@@ -1,0 +1,40 @@
+# Self-hosted production: app (web + worker) + Postgres + Redis on one machine.
+#   cp .env.example .env   # set OPENCODE_API_KEY (and APP_URL); DB/Redis URLs below are wired already
+#   docker compose -f docker-compose.prod.yml up -d --build
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://catalogforge:${POSTGRES_PASSWORD:-catalogforge}@postgres:5432/catalogforge
+      REDIS_URL: redis://redis:6379
+      ROLE: all
+      STORAGE_DIR: /data/storage
+    ports: ["${PORT:-3000}:3000"]
+    volumes: [appdata:/data]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: catalogforge
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-catalogforge}
+      POSTGRES_DB: catalogforge
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catalogforge"]
+      interval: 2s
+      retries: 30
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # AOF keeps queued jobs across restarts; BullMQ requires noeviction.
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    volumes: [redisdata:/data]
+volumes:
+  appdata:
+  pgdata:
+  redisdata:

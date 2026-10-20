@@ -9,7 +9,7 @@ CatalogForge turns a merchant's messy supplier spreadsheet and photo folder into
 - never slows the storefront down.
 
 - **Edge cases first:** [`EDGE-CASES.md`](EDGE-CASES.md), the first commit in the history.
-- **Deploy guide:** [`docs/DEPLOY.md`](docs/DEPLOY.md)
+- **Deploy guide:** [`docs/DEPLOY.md`](docs/DEPLOY.md). One Docker image (migrations, demo seed, worker and web), so you only set `DATABASE_URL`, `REDIS_URL`, `OPENCODE_API_KEY` and `APP_URL`. Railway: `railway.json`. Any VPS: `docker compose -f docker-compose.prod.yml up -d`.
 - **Sample data:** [`fixtures/`](fixtures/README.md)
 
 ---
