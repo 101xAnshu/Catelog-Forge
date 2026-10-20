@@ -8,10 +8,10 @@ export function StoreHeader({ ctx }: { ctx: StoreContext }) {
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-bg/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href={`/store/${ctx.countrySegment}${ctx.qs}`} className="text-lg font-semibold tracking-tight">
+        <Link href={ctx.href("/store")} className="text-lg font-semibold tracking-tight">
           {ctx.store.name}
         </Link>
-        <CountrySwitcher current={ctx.country} label={s.shipTo} qs={ctx.qs} />
+        <CountrySwitcher current={ctx.country} label={s.shipTo} />
       </div>
     </header>
   );

@@ -4,7 +4,7 @@ The same Docker image runs both services; `ROLE` picks which one.
 
 | Service | Where | Settings |
 |---|---|---|
-| `web` | Railway (from this repo, `Dockerfile`) | `ROLE=web`, public domain, health check `/store/auto` |
+| `web` | Railway (from this repo, `Dockerfile`) | `ROLE=web`, public domain, health check `/store` |
 | `worker` | Railway (same repo/image) | `ROLE=worker`, **2 replicas**, no public domain |
 | Redis | Railway Redis plugin | AOF persistence is on by default |
 | Postgres | Supabase (or the Railway Postgres plugin) | Use the *session* pooler URL (port 5432); the transaction pooler breaks `LISTEN`/prepared statements |

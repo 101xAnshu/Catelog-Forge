@@ -42,7 +42,7 @@ export function Nav({ stores, storeId, email }: { stores: Array<{ id: string; na
               <Icon size={15} aria-hidden /> {label}
             </Link>
           ))}
-          <a href="/store/de" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm text-muted hover:text-text">
+          <a href="/store?country=DE" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm text-muted hover:text-text">
             <ExternalLink size={15} aria-hidden /> Storefront
           </a>
         </nav>

@@ -95,7 +95,7 @@ bun run dev                          # web on http://localhost:3000
 bun run worker                       # in a second terminal (run it twice for 2 workers)
 ```
 
-Log in at `http://localhost:3000/login` with **`demo@catalogforge.dev` / `demo1234`**. Upload `fixtures/small-20.csv` **together with** `fixtures/photos.zip` (photos only match products from the same upload), approve a few products, then open the storefront at `http://localhost:3000/store/de`.
+Log in at `http://localhost:3000/login` with **`demo@catalogforge.dev` / `demo1234`**. Upload `fixtures/small-20.csv` **together with** `fixtures/photos.zip` (photos only match products from the same upload), approve a few products, then open the storefront at `http://localhost:3000/store?country=DE`.
 
 **AI keys (`.env`):**
 

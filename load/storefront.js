@@ -21,9 +21,9 @@ export const options = {
 
 export default function () {
   const country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
-  const collection = http.get(`${BASE}/store/${country}`, { tags: { page: "collection" } });
+  const collection = http.get(`${BASE}/store?country=${country}`, { tags: { page: "collection" } });
   check(collection, { "collection 200": (r) => r.status === 200 });
-  const product = http.get(`${BASE}/store/${country}/products/${HANDLE}`, { tags: { page: "product" } });
+  const product = http.get(`${BASE}/store/products/${HANDLE}?country=${country}`, { tags: { page: "product" } });
   check(product, { "product 200": (r) => r.status === 200 });
   sleep(0.5);
 }

@@ -7,7 +7,7 @@ BASE="${1:-http://localhost:3000}"
 HANDLE="${2:-hand-thrown-terracotta-planter}"
 DURATION="${DURATION:-60}"
 CONNECTIONS="${CONNECTIONS:-100}"
-for path in "/store/de" "/store/de/products/${HANDLE}" "/store/fr/products/${HANDLE}"; do
+for path in "/store?country=DE" "/store/products/${HANDLE}?country=DE" "/store/products/${HANDLE}?country=FR"; do
   echo "== ${path}"
   bunx --bun autocannon@7 -c "${CONNECTIONS}" -d "${DURATION}" --renderStatusCodes "${BASE}${path}"
 done
