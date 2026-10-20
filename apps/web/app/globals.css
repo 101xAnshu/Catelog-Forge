@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-2: #f1f1ee;
+  --border: #e3e3de;
+  --text: #1c1c1a;
+  --muted: #6b6b65;
+  --accent: #2f6f4f;
+  --accent-fg: #ffffff;
+  --good: #1f8a4c;
+  --warn: #b7791f;
+  --bad: #c53030;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121211;
+    --surface: #1b1b19;
+    --surface-2: #242421;
+    --border: #33332f;
+    --text: #ecece8;
+    --muted: #9d9d95;
+    --accent: #5fb38a;
+    --accent-fg: #0d1a13;
+    --good: #48bb78;
+    --warn: #ecc94b;
+    --bad: #fc8181;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+}
+
+html, body { background: var(--bg); color: var(--text); }
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+
+@layer components {
+  .input { @apply w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20; }
+  .btn { @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-sm font-medium text-text hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply inline-flex items-center justify-center gap-1.5 rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-fg hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-danger { @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-bad/40 px-3 py-1.5 text-sm font-medium text-bad hover:bg-bad/10 disabled:opacity-50; }
+  .card { @apply rounded-xl border border-border bg-surface; }
+  .chip { @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium; }
+}

@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { createDb } from "./client";
 import { apiKeys, countryLocales, storeMembers, stores, users } from "./schema";
+import { hashPassword } from "./password";
 import { hashToken } from "./tokens";
 
 export const DEFAULT_COUNTRY_LOCALES: Array<[string, "de" | "fr"]> = [
@@ -23,8 +24,8 @@ export async function seed(): Promise<{ storeId: string }> {
     if (!store) throw new Error("seed: store not created");
     const [user] = await db
       .insert(users)
-      .values({ email: DEMO_EMAIL, passwordHash: await Bun.password.hash(DEMO_PASSWORD) })
-      .onConflictDoUpdate({ target: users.email, set: { email: sql`excluded.email` } })
+      .values({ email: DEMO_EMAIL, passwordHash: await hashPassword(DEMO_PASSWORD) })
+      .onConflictDoUpdate({ target: users.email, set: { passwordHash: sql`excluded.password_hash` } })
       .returning({ id: users.id });
     if (!user) throw new Error("seed: user not created");
     await db.insert(storeMembers).values({ storeId: store.id, userId: user.id, role: "owner" }).onConflictDoNothing();
