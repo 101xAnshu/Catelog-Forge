@@ -105,6 +105,13 @@ export function parsePrice(
       intPart = s;
     } else if (after.length === 0) {
       intPart = s.slice(0, lastSep);
+    } else if (sameSepCount === 1 && !otherSepPresent && after.length >= 4) {
+      // Spreadsheet float noise such as 20.990000000000002 → round half-up to cents on the digit string.
+      const digits = `${s.slice(0, lastSep).replace(/[.,]/g, "")}${after.slice(0, 2)}`;
+      const rounded = BigInt(digits || "0") + (Number(after[2]) >= 5 ? 1n : 0n);
+      intPart = (rounded / 100n).toString();
+      fracPart = (rounded % 100n).toString().padStart(2, "0");
+      issues.push(issue("PRICE_ROUNDED", "info", `"${original}" rounded to 2 decimals`, { field, original }));
     } else {
       return {
         money: null,

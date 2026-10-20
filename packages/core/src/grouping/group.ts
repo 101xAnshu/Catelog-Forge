@@ -69,14 +69,26 @@ export function skuBase(row: CleanedRow): string | null {
   return stripped ? parts.join("-") : null;
 }
 
+/** SKU minus a trailing variant index (`-1`, `-12`, `-B`); null when there is no SKU. */
+function skuFamily(sku: string | null): string | null {
+  if (!sku) return null;
+  const parts = sku.toUpperCase().split(/[-_/. ]+/).filter(Boolean);
+  if (parts.length > 1 && /^(\d{1,2}|[A-Z])$/.test(parts[parts.length - 1] as string)) parts.pop();
+  return parts.join("-");
+}
+
 /** Name minus sizes, colours, numbers and units; used to join split rows of the same product. */
 export function nameKey(row: CleanedRow): string | null {
   if (!row.name) return null;
   const own = new Set([row.color, row.size].filter(Boolean).map((s) => (s as string).toLowerCase()));
+  // Numbers with a unit are variant sizes; bare numbers ("Planter 2") identify a product unless they are this row's size.
+  const ownNumbers = new Set((row.size ?? "").match(/\d+(?:[.,]\d+)?/g) ?? []);
   const tokens = row.name
     .toLowerCase()
-    .replace(/\d+(?:[.,]\d+)?\s*(?:cm|mm|m|in|inch|inches|"|″|kg|g|lbs?|oz|l|ml|liter|litre)?\b/g, " ")
-    .split(/[^a-zäöüßàâçéèêëîïôûùÿœ]+/)
+    .replace(/\d+(?:[.,]\d+)?\s*(?:cm|mm|m|in|inch|inches|"|″|kg|g|lbs?|oz|l|ml|liter|litre)\b/g, " ")
+    .replace(/\d+(?:[.,]\d+)?/g, (n) => (ownNumbers.has(n) ? " " : ` n${n.replace(",", ".")} `))
+    .split(/[^a-z0-9.äöüßàâçéèêëîïôûùÿœ]+/)
+    .map((t) => t.replace(/^\.+|\.+$/g, ""))
     .filter((t) => t && !SIZE_WORDS.has(t) && !COLOR_WORDS.has(t) && !own.has(t));
   const key = tokens.join(" ").trim();
   return key.length >= 3 ? key : null;
@@ -135,14 +147,17 @@ export function groupRows(rows: CleanedRow[], _opts: { defaultCurrency: string }
     }
   });
 
-  // Phase 2: name joins, unless both sides already carry different SKU bases.
-  const compBases = (root: number): Set<string> => {
-    const s = new Set<string>();
-    rows.forEach((_, i) => {
-      if (uf.find(i) === root && bases[i]) s.add(bases[i] as string);
-    });
-    return s;
-  };
+  // Phase 2: name joins, unless both sides already carry different SKU families
+  // (TP-0001-1/TP-0001-2 share family TP-0001; PL-001 vs PL-002 stay apart).
+  const identities = new Map<number, Set<string>>();
+  rows.forEach((r, i) => {
+    const ident = bases[i] ?? skuFamily(r.parentSku ?? r.sku);
+    if (!ident) return;
+    const root = uf.find(i);
+    const set = identities.get(root) ?? new Set<string>();
+    set.add(ident);
+    identities.set(root, set);
+  });
   const byName = new Map<string, number>();
   rows.forEach((r, i) => {
     const nk = nameKey(r);
@@ -153,10 +168,17 @@ export function groupRows(rows: CleanedRow[], _opts: { defaultCurrency: string }
       byName.set(key, i);
       return;
     }
-    const a = compBases(uf.find(prev));
-    const b = compBases(uf.find(i));
-    const disjoint = a.size > 0 && b.size > 0 && ![...a].some((x) => b.has(x));
-    if (!disjoint) uf.union(prev, i);
+    const ra = uf.find(prev);
+    const rb = uf.find(i);
+    if (ra === rb) return;
+    const a = identities.get(ra);
+    const b = identities.get(rb);
+    if (a?.size && b?.size && ![...a].some((x) => b.has(x))) return;
+    uf.union(ra, rb);
+    const merged = new Set([...(a ?? []), ...(b ?? [])]);
+    identities.delete(ra);
+    identities.delete(rb);
+    if (merged.size) identities.set(uf.find(ra), merged);
   });
 
   const components = new Map<number, number[]>();

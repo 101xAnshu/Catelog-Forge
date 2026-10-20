@@ -44,7 +44,8 @@ export function nearestCategory(category: string): string {
     const d = editDistance(lc, c.toLowerCase());
     if (d < best.d) best = { c, d };
   }
-  return best.d <= Math.max(4, lc.length / 3) ? best.c : "Uncategorized";
+  // Only accept near-typos; an unrelated sibling ("Decor > Textiles" → "Decor > Vases") is worse than review.
+  return best.d <= Math.max(2, Math.floor(lc.length / 10)) ? best.c : "Uncategorized";
 }
 
 /**

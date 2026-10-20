@@ -1,5 +1,6 @@
 import { AiServerError, AiTimeoutError, RateLimitError, type AiProvider, type CompletionRequest, type CompletionResult, type Tier } from "./types";
 import { GROQ_MODELS } from "./cost";
+import { phraseStatus } from "@cf/core";
 
 type Failure = "rate_limit" | "invalid_json" | "timeout" | "server_error" | "invented_claim";
 
@@ -81,11 +82,15 @@ const CLAIM_TERMS = [
 const CATEGORY_HINTS: Array<[RegExp, string]> = [
   [/planter|pot|topf|cache-pot/i, "Home & Garden > Planters"],
   [/vase/i, "Home & Garden > Decor > Vases"],
-  [/lamp|light|lampe/i, "Home & Garden > Lighting"],
+  [/string light|fairy light|lichterkette/i, "Home & Garden > Lighting > String Lights"],
+  [/lamp|light|lampe|lantern|laterne/i, "Home & Garden > Lighting > Lamps"],
   [/mug|cup|tasse|bowl|plate|teller/i, "Home & Garden > Kitchen & Dining > Tableware"],
-  [/cushion|pillow|kissen|throw|blanket/i, "Home & Garden > Decor > Textiles"],
-  [/candle|kerze/i, "Home & Garden > Decor > Candles"],
-  [/chair|table|stool|bench|tisch|stuhl/i, "Home & Garden > Furniture"],
+  [/cushion|pillow|kissen|throw|blanket/i, "Home & Garden > Decor > Cushions & Throws"],
+  [/candle|kerze/i, "Home & Garden > Decor > Candles & Holders"],
+  [/chair|table|stool|bench|tisch|stuhl/i, "Home & Garden > Garden Furniture"],
+  [/basket|korb|storage/i, "Home & Garden > Decor > Baskets & Storage"],
+  [/watering can|gießkanne/i, "Home & Garden > Watering Cans"],
+  [/bird|vogel/i, "Home & Garden > Bird Feeders & Houses"],
   [/tool|trowel|shovel|rake|pruner|shears/i, "Home & Garden > Garden Tools"],
 ];
 
@@ -174,13 +179,15 @@ export class FakeProvider implements AiProvider {
       const name = (nameCell?.text ?? "Untitled product").replace(/\s+\d+(\.\d+)?\s?(cm|mm|in|")\b/gi, "").trim();
       const title = name.replace(/\b\w/g, (m) => m.toUpperCase()).slice(0, 120);
       const all = p.cells.map((c) => c.text).join(" ");
-      const category = CATEGORY_HINTS.find(([re]) => re.test(all))?.[1] ?? "Home & Garden > Decor";
+      const hinted = CATEGORY_HINTS.find(([re]) => re.test(all))?.[1];
+      const category = hinted ?? "Home & Garden > Garden Decor";
       const claims: Array<{ text: string; quote: string; row: number; column: string }> = [];
       for (const cell of p.cells) {
         const lower = cell.text.toLowerCase();
         for (const term of CLAIM_TERMS) {
           const idx = lower.indexOf(term);
-          if (idx >= 0 && !claims.some((c) => c.text === term)) {
+          // A decent model does not claim what the source negates ("not frost-proof").
+          if (idx >= 0 && !claims.some((c) => c.text === term) && phraseStatus(term, cell.text) === "present") {
             claims.push({ text: term, quote: cell.text.slice(idx, idx + term.length), row: cell.row, column: cell.column });
           }
         }
@@ -196,11 +203,12 @@ export class FakeProvider implements AiProvider {
         claims.push({ text: "organic", quote: "certified organic", row: p.cells[0]?.row ?? 1, column: "Notes" });
         description += "<p>Certified organic.</p>";
       }
-      const conf = (k: number) => 60 + ((h >> k) % 39);
+      // Mostly confident on clean input, with an occasional genuinely unsure field (~8%).
+      const conf = (k: number) => ((h >> k) % 25 === 0 ? 55 + ((h >> k) % 14) : 78 + ((h >> k) % 21));
       const confidence: Record<string, number> = {
         title: nameCell ? Math.max(conf(1), 85) : 55,
-        description_html: conf(3),
-        category: conf(5),
+        description_html: descCell ? conf(3) : 66,
+        category: hinted ? conf(5) : 62,
         tags: conf(7),
       };
       for (const k of Object.keys(attributes)) confidence[`attributes.${k}`] = conf(k.length + 9);

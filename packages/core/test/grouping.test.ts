@@ -17,6 +17,19 @@ describe("groupRows", () => {
   const planter = groups.find((g) => g.productKey === "sku:TC-PL");
   const bath = groups.find((g) => g.productKey === "sku:ST-BW-01");
 
+  test("products whose names differ only by a model number stay separate", () => {
+    const g = groupRows(
+      [
+        row(1, ["PL-001", "Garden Planter 1", "10", "", "", "", "", ""]),
+        row(2, ["PL-002", "Garden Planter 2", "12", "", "", "", "", ""]),
+        row(3, ["", "Garden Planter 2", "12", "", "", "", "", ""]),
+      ],
+      { defaultCurrency: "EUR" },
+    );
+    expect(g).toHaveLength(2);
+    expect(g.find((x) => x.rows.some((r) => r.rowNumber === 3))?.rows.map((r) => r.rowNumber)).toEqual([2, 3]);
+  });
+
   test("split and out-of-order rows grouped into products with variants", () => {
     expect(groups).toHaveLength(2);
     expect(planter?.rows.map((r) => r.rowNumber)).toEqual([14, 15, 212]);
