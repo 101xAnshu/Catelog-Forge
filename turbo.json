@@ -1,0 +1,10 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["DATABASE_URL", "REDIS_URL", "GROQ_API_KEY", "STORAGE_DIR", "AI_PROVIDER", "NODE_ENV"],
+  "tasks": {
+    "build": { "dependsOn": ["^build"], "outputs": [".next/**", "!.next/cache/**", "dist/**"] },
+    "typecheck": { "dependsOn": ["^typecheck"] },
+    "lint": {},
+    "dev": { "cache": false, "persistent": true }
+  }
+}

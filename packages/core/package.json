@@ -1,0 +1,13 @@
+{
+  "name": "@cf/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p tsconfig.json", "lint": "tsc -p tsconfig.json" },
+  "dependencies": {
+    "sanitize-html": "^2.14.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": { "@types/sanitize-html": "^2.13.0" }
+}

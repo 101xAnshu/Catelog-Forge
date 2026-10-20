@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: catalogforge
+      POSTGRES_PASSWORD: catalogforge
+      POSTGRES_DB: catalogforge
+    ports: ["5433:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catalogforge"]
+      interval: 2s
+      retries: 20
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec"]
+    ports: ["6380:6379"]
+    volumes: [redisdata:/data]
+volumes:
+  pgdata:
+  redisdata:
