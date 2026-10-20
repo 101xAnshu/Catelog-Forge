@@ -16,6 +16,13 @@ export interface RunningWorkers {
 
 const concurrency = (name: string, fallback: number) => Number(process.env[`WORKER_${name}_CONCURRENCY`] ?? fallback);
 
+/** Jobs already picked up when a merchant cancels are dropped here instead of writing results. */
+async function isCancelled(importId: string | null | undefined): Promise<boolean> {
+  if (!importId) return false;
+  const [row] = await wdb().sql<Array<{ status: string }>>`select status from imports where id = ${importId}`;
+  return row?.status === "cancelled";
+}
+
 export async function startWorkers(opts: { reconcileEveryMs?: number; log?: boolean } = {}): Promise<RunningWorkers> {
   const connection = redisConnection();
   const log = opts.log ?? true;
@@ -24,6 +31,7 @@ export async function startWorkers(opts: { reconcileEveryMs?: number; log?: bool
   const importWorker = new Worker<ImportJob>(
     QUEUES.import,
     async (job: Job<ImportJob>) => {
+      if (await isCancelled(job.data.importId)) return;
       try {
         if (job.data.stage === "parse") await runParse(job.data.importId);
         else if (job.data.stage === "clean") await runClean(job.data.importId);
@@ -42,10 +50,12 @@ export async function startWorkers(opts: { reconcileEveryMs?: number; log?: bool
 
   // A limiter is required for manual rate limiting (worker.rateLimit) to pause the whole queue.
   const limiter = { max: 10_000, duration: 1000 };
-  const buildWorker: Worker<BuildJob> = new Worker<BuildJob>(QUEUES.build, (job) => runBuild(job, buildWorker), {
-    ...common, concurrency: concurrency("BUILD", 4), limiter,
-  });
-  const translateWorker: Worker<TranslateJob> = new Worker<TranslateJob>(QUEUES.translate, (job) => runTranslate(job, translateWorker), {
+  const buildWorker: Worker<BuildJob> = new Worker<BuildJob>(
+    QUEUES.build,
+    async (job) => ((await isCancelled(job.data.importId)) ? undefined : runBuild(job, buildWorker)),
+    { ...common, concurrency: concurrency("BUILD", 4), limiter },
+  );
+  const translateWorker: Worker<TranslateJob> = new Worker<TranslateJob>(QUEUES.translate, async (job) => ((await isCancelled(job.data.importId)) ? undefined : runTranslate(job, translateWorker)), {
     ...common, concurrency: concurrency("TRANSLATE", 2), limiter,
   });
   const webhookWorker = new Worker<WebhookJob>(QUEUES.webhook, runWebhook, { ...common, concurrency: 2 });

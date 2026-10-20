@@ -53,7 +53,7 @@ export async function reconcile(): Promise<{ imports: number; builds: number; tr
     where status = 'paused' and paused_until < now()`;
 
   const open = await sql<Array<{ id: string; store_id: string; status: string }>>`
-    select id, store_id, status from imports where status not in ('completed', 'failed') order by created_at`;
+    select id, store_id, status from imports where status not in ('completed', 'failed', 'cancelled') order by created_at`;
   const buildCovered = await productsCoveredBy<BuildJob>(QUEUES.build);
   const translateCovered = await productsCoveredBy<TranslateJob>(QUEUES.translate);
 
@@ -103,7 +103,7 @@ export async function reconcile(): Promise<{ imports: number; builds: number; tr
   const loose = await sql<Array<{ product_id: string; store_id: string }>>`
     select distinct t.product_id, t.store_id from translations t join products p on p.id = t.product_id
     where t.state = 'pending' and p.status <> 'processing'
-      and (p.last_import_id is null or p.last_import_id in (select id from imports where status in ('completed','failed')))
+      and (p.last_import_id is null or p.last_import_id in (select id from imports where status in ('completed','failed','cancelled')))
     limit 500`;
   const byStore = new Map<string, string[]>();
   for (const r of loose) if (!translateCovered.has(r.product_id)) byStore.set(r.store_id, [...(byStore.get(r.store_id) ?? []), r.product_id]);

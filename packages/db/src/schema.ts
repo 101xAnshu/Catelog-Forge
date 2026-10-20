@@ -79,7 +79,7 @@ export const countryLocales = pgTable(
 /* ---------- imports ---------- */
 
 export type ImportStatus =
-  | "queued" | "parsing" | "cleaning" | "grouping" | "building" | "translating" | "paused" | "completed" | "failed";
+  | "queued" | "parsing" | "cleaning" | "grouping" | "building" | "translating" | "paused" | "completed" | "failed" | "cancelled";
 
 export interface ImportCounts {
   total: number;

@@ -51,7 +51,7 @@ export default function UploadPage() {
   const imports = useQuery({
     queryKey: ["imports"],
     queryFn: () => api<{ imports: ImportItem[] }>("/api/imports"),
-    refetchInterval: (q) => (connected ? 15000 : q.state.data?.imports.some((i) => !["completed", "failed"].includes(i.status)) ? 3000 : 15000),
+    refetchInterval: (q) => (connected ? 15000 : q.state.data?.imports.some((i) => !["completed", "failed", "cancelled"].includes(i.status)) ? 3000 : 15000),
   });
 
   function onDrop(accepted: File[], rejected: FileRejection[]) {
@@ -217,10 +217,15 @@ function ImportCard({ imp }: { imp: ImportItem }) {
   const c = imp.counts;
   const processed = c.done + c.needs_review + c.failed;
   const pct = c.total ? Math.round((processed / c.total) * 100) : 0;
-  const active = !["completed", "failed"].includes(imp.status);
+  const active = !["completed", "failed", "cancelled"].includes(imp.status);
 
   const retry = useMutation({
     mutationFn: () => api<{ retried: number | string; message?: string }>(`/api/imports/${imp.id}/retry`, { method: "POST" }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ["imports"] }),
+  });
+
+  const cancel = useMutation({
+    mutationFn: () => api<{ cancelled: boolean }>(`/api/imports/${imp.id}/cancel`, { method: "POST" }),
     onSuccess: () => void qc.invalidateQueries({ queryKey: ["imports"] }),
   });
 
@@ -286,6 +291,18 @@ function ImportCard({ imp }: { imp: ImportItem }) {
             <RotateCcw size={14} /> Retry failed
           </button>
         )}
+        {active && (
+          <button
+            className="btn text-bad"
+            disabled={cancel.isPending}
+            onClick={() => {
+              if (window.confirm(`Cancel "${imp.filename}"? Rows not finished yet will be marked failed; products already built are kept.`)) cancel.mutate();
+            }}
+          >
+            <X size={14} /> {cancel.isPending ? "Cancelling…" : "Cancel import"}
+          </button>
+        )}
+        {cancel.error && <span className="self-center text-sm text-bad">{(cancel.error as Error).message}</span>}
         {retry.data && <span className="self-center text-sm text-muted">{retry.data.message ?? `Retrying ${retry.data.retried}`}</span>}
         {retry.error && <span className="self-center text-sm text-bad">{(retry.error as Error).message}</span>}
       </div>

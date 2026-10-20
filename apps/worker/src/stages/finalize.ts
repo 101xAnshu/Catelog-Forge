@@ -15,7 +15,7 @@ export async function checkFinalize(importId: string): Promise<boolean> {
       (select count(*) from translations t join products p on p.id = t.product_id
         where p.last_import_id = ${importId} and t.state = 'pending')::int as translations,
       (select status from imports where id = ${importId}) as status`;
-  if (!open || ["completed", "failed", "queued", "parsing", "cleaning", "grouping"].includes(open.status)) return false;
+  if (!open || ["completed", "failed", "cancelled", "queued", "parsing", "cleaning", "grouping"].includes(open.status)) return false;
   if (open.rows > 0 || open.products > 0) return false;
   if (open.translations > 0) {
     if (open.status === "building") {
@@ -29,7 +29,7 @@ export async function checkFinalize(importId: string): Promise<boolean> {
   const event = await sql.begin(async (tx) => {
     const [imp] = await tx<Array<{ store_id: string; status: string; total_rows: number; filename: string }>>`
       select store_id, status, total_rows, filename from imports where id = ${importId} for update`;
-    if (!imp || imp.status === "completed" || imp.status === "failed") return null;
+    if (!imp || imp.status === "completed" || imp.status === "failed" || imp.status === "cancelled") return null;
     const sum = counts.done + counts.needs_review + counts.failed;
     const ok = sum === imp.total_rows;
     await tx`update imports set status = ${ok ? "completed" : "failed"}, stage = 'finalize',

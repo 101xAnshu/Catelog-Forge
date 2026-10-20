@@ -41,6 +41,7 @@ const STATUS_STYLE: Record<string, string> = {
   invalid: "bg-bad/15 text-bad",
   orphan: "bg-surface-2 text-muted",
   archived: "bg-surface-2 text-muted",
+  cancelled: "bg-surface-2 text-muted",
 };
 
 export function StatusBadge({ status }: { status: string }) {

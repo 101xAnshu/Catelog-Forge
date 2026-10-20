@@ -76,3 +76,17 @@ export async function publishProgress(storeId: string, event: ProgressEvent): Pr
 
 /** Re-exported so apps share one bullmq instance/version. */
 export { Worker, Job } from "bullmq";
+
+/** Removes not-yet-started jobs of one import from every pipeline queue; returns how many were removed. */
+export async function removeImportJobs(importId: string): Promise<number> {
+  let removed = 0;
+  for (const name of [QUEUES.import, QUEUES.build, QUEUES.translate] as const) {
+    const jobs = await getQueue<{ importId?: string | null }>(name).getJobs(["waiting", "delayed", "prioritized", "paused"]);
+    for (const job of jobs) {
+      if (job?.data?.importId !== importId) continue;
+      await job.remove().catch(() => undefined); // already picked up by a worker: the worker's cancel check skips it
+      removed++;
+    }
+  }
+  return removed;
+}
