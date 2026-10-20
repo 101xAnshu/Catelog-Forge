@@ -1,0 +1,583 @@
+[
+  {
+    "productKey": "TC-PL",
+    "expected": {
+      "titleKeywords": [
+        "terracotta",
+        "planter"
+      ],
+      "category": "Home & Garden > Planters",
+      "attributes": {
+        "material": "terracotta"
+      },
+      "colors": [
+        "terracotta"
+      ],
+      "sizesCm": [
+        20,
+        30,
+        40
+      ],
+      "priceCentsFrom": 2499,
+      "allowedClaims": [
+        "hand-thrown",
+        "frost-resistant"
+      ],
+      "forbiddenClaims": [
+        "frost-proof",
+        "waterproof"
+      ]
+    }
+  },
+  {
+    "productKey": "GC-PT",
+    "expected": {
+      "titleKeywords": [
+        "ceramic",
+        "pot"
+      ],
+      "category": "Home & Garden > Planters",
+      "attributes": {
+        "material": "ceramic"
+      },
+      "colors": [
+        "blue",
+        "white",
+        "green"
+      ],
+      "sizesCm": [
+        15,
+        25
+      ],
+      "priceCentsFrom": 1899,
+      "allowedClaims": [
+        "glazed"
+      ],
+      "forbiddenClaims": [
+        "frost-proof",
+        "dishwasher-safe"
+      ]
+    }
+  },
+  {
+    "productKey": "WC-CN",
+    "expected": {
+      "titleKeywords": [
+        "watering",
+        "can"
+      ],
+      "category": "Home & Garden > Watering Equipment",
+      "attributes": {
+        "material": "galvanised steel"
+      },
+      "colors": [
+        "grey",
+        "green"
+      ],
+      "sizesCm": [],
+      "priceCentsFrom": 3450,
+      "allowedClaims": [
+        "rust-resistant"
+      ],
+      "forbiddenClaims": [
+        "rustproof",
+        "BPA-free"
+      ]
+    }
+  },
+  {
+    "productKey": "BM-BW",
+    "expected": {
+      "titleKeywords": [
+        "bamboo",
+        "bowl"
+      ],
+      "category": "Home & Garden > Kitchen & Dining > Serveware",
+      "attributes": {
+        "material": "bamboo"
+      },
+      "colors": [
+        "natural"
+      ],
+      "sizesCm": [
+        18,
+        24
+      ],
+      "priceCentsFrom": 1599,
+      "allowedClaims": [
+        "hand wash only"
+      ],
+      "forbiddenClaims": [
+        "dishwasher-safe",
+        "organic"
+      ]
+    }
+  },
+  {
+    "productKey": "LN-NP",
+    "expected": {
+      "titleKeywords": [
+        "linen",
+        "napkin"
+      ],
+      "category": "Home & Garden > Kitchen & Dining > Table Linens",
+      "attributes": {
+        "material": "linen"
+      },
+      "colors": [
+        "white",
+        "sage",
+        "beige"
+      ],
+      "sizesCm": [],
+      "priceCentsFrom": 2900,
+      "allowedClaims": [
+        "machine washable",
+        "stonewashed"
+      ],
+      "forbiddenClaims": [
+        "organic",
+        "handmade"
+      ]
+    }
+  },
+  {
+    "productKey": "OC-BK",
+    "expected": {
+      "titleKeywords": [
+        "towel",
+        "cotton"
+      ],
+      "category": "Home & Garden > Linens & Bedding > Towels",
+      "attributes": {
+        "material": "cotton"
+      },
+      "colors": [
+        "white",
+        "grey"
+      ],
+      "sizesCm": [
+        70,
+        100
+      ],
+      "priceCentsFrom": 2400,
+      "allowedClaims": [
+        "organic",
+        "GOTS certified"
+      ],
+      "forbiddenClaims": [
+        "antibacterial"
+      ]
+    }
+  },
+  {
+    "productKey": "CN-SY",
+    "expected": {
+      "titleKeywords": [
+        "candle"
+      ],
+      "category": "Home & Garden > Decor > Candles",
+      "attributes": {
+        "material": "soy wax"
+      },
+      "colors": [
+        "cream"
+      ],
+      "sizesCm": [
+        8,
+        12
+      ],
+      "priceCentsFrom": 1450,
+      "allowedClaims": [
+        "hand-poured",
+        "handmade"
+      ],
+      "forbiddenClaims": [
+        "non-toxic",
+        "organic"
+      ]
+    }
+  },
+  {
+    "productKey": "SH-GL",
+    "expected": {
+      "titleKeywords": [
+        "gloves"
+      ],
+      "category": "Home & Garden > Gardening > Gardening Gloves",
+      "attributes": {
+        "material": "leather"
+      },
+      "colors": [
+        "brown"
+      ],
+      "sizesCm": [],
+      "priceCentsFrom": 1299,
+      "allowedClaims": [
+        "water-resistant"
+      ],
+      "forbiddenClaims": [
+        "waterproof",
+        "cut-proof"
+      ]
+    }
+  },
+  {
+    "productKey": "PR-SH",
+    "expected": {
+      "titleKeywords": [
+        "pruning",
+        "shears"
+      ],
+      "category": "Home & Garden > Gardening > Gardening Tools",
+      "attributes": {
+        "material": "stainless steel"
+      },
+      "colors": [
+        "red",
+        "black"
+      ],
+      "sizesCm": [
+        20
+      ],
+      "priceCentsFrom": 2799,
+      "allowedClaims": [
+        "lifetime warranty"
+      ],
+      "forbiddenClaims": [
+        "rustproof",
+        "dishwasher-safe"
+      ]
+    }
+  },
+  {
+    "productKey": "RB-BX",
+    "expected": {
+      "titleKeywords": [
+        "raised",
+        "bed"
+      ],
+      "category": "Home & Garden > Gardening > Raised Garden Beds",
+      "attributes": {
+        "material": "larch wood"
+      },
+      "colors": [
+        "natural"
+      ],
+      "sizesCm": [
+        80,
+        120
+      ],
+      "priceCentsFrom": 8900,
+      "allowedClaims": [
+        "untreated",
+        "weather-resistant"
+      ],
+      "forbiddenClaims": [
+        "rot-proof",
+        "organic"
+      ]
+    }
+  },
+  {
+    "productKey": "BF-FD",
+    "expected": {
+      "titleKeywords": [
+        "bird",
+        "feeder"
+      ],
+      "category": "Home & Garden > Lawn & Garden > Bird Feeders",
+      "attributes": {
+        "material": "pine wood"
+      },
+      "colors": [
+        "natural",
+        "green"
+      ],
+      "sizesCm": [],
+      "priceCentsFrom": 1999,
+      "allowedClaims": [
+        "FSC certified"
+      ],
+      "forbiddenClaims": [
+        "squirrel-proof"
+      ]
+    }
+  },
+  {
+    "productKey": "WL-LT",
+    "expected": {
+      "titleKeywords": [
+        "lantern",
+        "solar"
+      ],
+      "category": "Home & Garden > Lighting > Outdoor Lighting",
+      "attributes": {
+        "material": "aluminium"
+      },
+      "colors": [
+        "black",
+        "anthracite"
+      ],
+      "sizesCm": [
+        25
+      ],
+      "priceCentsFrom": 3999,
+      "allowedClaims": [
+        "IP44",
+        "splash-proof"
+      ],
+      "forbiddenClaims": [
+        "waterproof"
+      ]
+    }
+  },
+  {
+    "productKey": "SC-CU",
+    "expected": {
+      "titleKeywords": [
+        "cushion"
+      ],
+      "category": "Home & Garden > Lawn & Garden > Outdoor Furniture Accessories",
+      "attributes": {
+        "material": "polyester"
+      },
+      "colors": [
+        "grey",
+        "terracotta",
+        "olive"
+      ],
+      "sizesCm": [
+        40,
+        50
+      ],
+      "priceCentsFrom": 2299,
+      "allowedClaims": [
+        "water-repellent",
+        "removable cover"
+      ],
+      "forbiddenClaims": [
+        "waterproof",
+        "UV-resistant"
+      ]
+    }
+  },
+  {
+    "productKey": "HB-PS",
+    "expected": {
+      "titleKeywords": [
+        "herb",
+        "seed"
+      ],
+      "category": "Home & Garden > Gardening > Seeds",
+      "attributes": {
+        "material": "seeds"
+      },
+      "colors": [
+        "multicolour"
+      ],
+      "sizesCm": [],
+      "priceCentsFrom": 999,
+      "allowedClaims": [
+        "organic"
+      ],
+      "forbiddenClaims": [
+        "non-GMO",
+        "heirloom"
+      ]
+    }
+  },
+  {
+    "productKey": "CB-BD",
+    "expected": {
+      "titleKeywords": [
+        "chopping",
+        "board"
+      ],
+      "category": "Home & Garden > Kitchen & Dining > Cutting Boards",
+      "attributes": {
+        "material": "oak wood"
+      },
+      "colors": [
+        "natural"
+      ],
+      "sizesCm": [
+        30,
+        40
+      ],
+      "priceCentsFrom": 3299,
+      "allowedClaims": [
+        "food-safe finish",
+        "hand wash only"
+      ],
+      "forbiddenClaims": [
+        "antibacterial",
+        "dishwasher-safe"
+      ]
+    }
+  },
+  {
+    "productKey": "ST-MG",
+    "expected": {
+      "titleKeywords": [
+        "mug"
+      ],
+      "category": "Home & Garden > Kitchen & Dining > Drinkware",
+      "attributes": {
+        "material": "stoneware"
+      },
+      "colors": [
+        "sand",
+        "blue",
+        "black"
+      ],
+      "sizesCm": [
+        9
+      ],
+      "priceCentsFrom": 1499,
+      "allowedClaims": [
+        "dishwasher-safe",
+        "microwave-safe"
+      ],
+      "forbiddenClaims": [
+        "handmade",
+        "lead-free"
+      ]
+    }
+  },
+  {
+    "productKey": "WT-TY",
+    "expected": {
+      "titleKeywords": [
+        "basket"
+      ],
+      "category": "Home & Garden > Storage & Organisation > Baskets",
+      "attributes": {
+        "material": "seagrass"
+      },
+      "colors": [
+        "natural"
+      ],
+      "sizesCm": [
+        30,
+        40
+      ],
+      "priceCentsFrom": 2799,
+      "allowedClaims": [
+        "handwoven"
+      ],
+      "forbiddenClaims": [
+        "waterproof",
+        "organic"
+      ]
+    }
+  },
+  {
+    "productKey": "HM-HK",
+    "expected": {
+      "titleKeywords": [
+        "hammock"
+      ],
+      "category": "Home & Garden > Lawn & Garden > Hammocks",
+      "attributes": {
+        "material": "cotton"
+      },
+      "colors": [
+        "cream",
+        "blue"
+      ],
+      "sizesCm": [
+        200
+      ],
+      "priceCentsFrom": 6900,
+      "allowedClaims": [
+        "max load 120 kg"
+      ],
+      "forbiddenClaims": [
+        "weatherproof",
+        "UV-resistant"
+      ]
+    }
+  },
+  {
+    "productKey": "CP-PT",
+    "expected": {
+      "titleKeywords": [
+        "mister"
+      ],
+      "category": "Home & Garden > Watering Equipment",
+      "attributes": {
+        "material": "copper"
+      },
+      "colors": [
+        "copper"
+      ],
+      "sizesCm": [],
+      "priceCentsFrom": 2499,
+      "allowedClaims": [
+        "copper plated"
+      ],
+      "forbiddenClaims": [
+        "solid copper"
+      ]
+    }
+  },
+  {
+    "productKey": "TK-BN",
+    "expected": {
+      "titleKeywords": [
+        "teak",
+        "bench"
+      ],
+      "category": "Home & Garden > Lawn & Garden > Outdoor Furniture",
+      "attributes": {
+        "material": "teak wood"
+      },
+      "colors": [
+        "natural"
+      ],
+      "sizesCm": [
+        120,
+        150
+      ],
+      "priceCentsFrom": 129900,
+      "allowedClaims": [
+        "FSC certified",
+        "solid teak"
+      ],
+      "forbiddenClaims": [
+        "maintenance-free",
+        "weatherproof"
+      ]
+    }
+  },
+  {
+    "productKey": "DR-MT",
+    "expected": {
+      "titleKeywords": [
+        "door",
+        "mat"
+      ],
+      "category": "Home & Garden > Decor > Door Mats",
+      "attributes": {
+        "material": "coir"
+      },
+      "colors": [
+        "natural",
+        "black"
+      ],
+      "sizesCm": [
+        60,
+        75
+      ],
+      "priceCentsFrom": 2199,
+      "allowedClaims": [
+        "non-slip"
+      ],
+      "forbiddenClaims": [
+        "weatherproof",
+        "eco-friendly"
+      ]
+    }
+  }
+]

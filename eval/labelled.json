@@ -1,0 +1,2603 @@
+{
+  "headers": [
+    "SKU",
+    "Product Name",
+    "Brand",
+    "Description",
+    "Price",
+    "Currency",
+    "Size",
+    "Colour",
+    "Material",
+    "Weight",
+    "Category",
+    "Notes",
+    "Image"
+  ],
+  "items": [
+    {
+      "id": "eval-01",
+      "expected": {
+        "titleKeywords": [
+          "terracotta",
+          "planter"
+        ],
+        "category": "Home & Garden > Planters",
+        "attributes": {
+          "material": "terracotta"
+        },
+        "allowedClaims": [
+          "hand-thrown",
+          "frost-resistant"
+        ],
+        "forbiddenClaims": [
+          "frost-proof",
+          "waterproof"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "TC-PL-20",
+          "Product Name": "Hand-thrown Terracotta Planter",
+          "Brand": "Erdwerk",
+          "Description": "Hand-thrown terracotta planter with drainage hole.",
+          "Price": "24.99",
+          "Currency": "EUR",
+          "Size": "20 cm",
+          "Colour": "terracotta",
+          "Material": "terracotta",
+          "Weight": "1800 g",
+          "Category": "",
+          "Notes": "frost-resistant (not frost-proof, bring indoors below 0 °C)",
+          "Image": ""
+        },
+        {
+          "SKU": "TC-PL-30",
+          "Product Name": "Hand-thrown Terracotta Planter",
+          "Brand": "Erdwerk",
+          "Description": "Hand-thrown terracotta planter with drainage hole.",
+          "Price": "34.99",
+          "Currency": "EUR",
+          "Size": "30 cm",
+          "Colour": "terracotta",
+          "Material": "terracotta",
+          "Weight": "1800 g",
+          "Category": "",
+          "Notes": "frost-resistant (not frost-proof, bring indoors below 0 °C)",
+          "Image": ""
+        },
+        {
+          "SKU": "TC-PL-40",
+          "Product Name": "Hand-thrown Terracotta Planter",
+          "Brand": "Erdwerk",
+          "Description": "Hand-thrown terracotta planter with drainage hole.",
+          "Price": "44.99",
+          "Currency": "EUR",
+          "Size": "40 cm",
+          "Colour": "terracotta",
+          "Material": "terracotta",
+          "Weight": "1800 g",
+          "Category": "",
+          "Notes": "frost-resistant (not frost-proof, bring indoors below 0 °C)",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-01-messy",
+      "expected": {
+        "titleKeywords": [
+          "terracotta",
+          "planter"
+        ],
+        "category": "Home & Garden > Planters",
+        "attributes": {
+          "material": "terracotta"
+        },
+        "allowedClaims": [
+          "hand-thrown",
+          "frost-resistant"
+        ],
+        "forbiddenClaims": [
+          "frost-proof",
+          "waterproof"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "TC-PL-20",
+          "Product Name": "Hand-thrown Terracotta Planter",
+          "Brand": "Erdwerk",
+          "Description": "Hand-thrown terracotta planter with drainage hole.",
+          "Price": "24.99",
+          "Currency": "EUR",
+          "Size": "7.9\"",
+          "Colour": "terracota",
+          "Material": "terracotta",
+          "Weight": "1800 g",
+          "Category": "",
+          "Notes": "frostbeständig (nicht frostfest, unter 0 °C ins Haus holen)",
+          "Image": ""
+        },
+        {
+          "SKU": "TC-PL-30",
+          "Product Name": "Hand-thrown Terracotta Planter",
+          "Brand": "Erdwerk",
+          "Description": "Hand-thrown terracotta planter with drainage hole.",
+          "Price": "34.99",
+          "Currency": "EUR",
+          "Size": "11.8\"",
+          "Colour": "terracota",
+          "Material": "terracotta",
+          "Weight": "1800 g",
+          "Category": "",
+          "Notes": "frostbeständig (nicht frostfest, unter 0 °C ins Haus holen)",
+          "Image": ""
+        },
+        {
+          "SKU": "TC-PL-40",
+          "Product Name": "Hand-thrown Terracotta Planter",
+          "Brand": "Erdwerk",
+          "Description": "Hand-thrown terracotta planter with drainage hole.",
+          "Price": "44.99",
+          "Currency": "EUR",
+          "Size": "15.7\"",
+          "Colour": "terracota",
+          "Material": "terracotta",
+          "Weight": "1800 g",
+          "Category": "",
+          "Notes": "frostbeständig (nicht frostfest, unter 0 °C ins Haus holen)",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-02",
+      "expected": {
+        "titleKeywords": [
+          "ceramic",
+          "pot"
+        ],
+        "category": "Home & Garden > Planters",
+        "attributes": {
+          "material": "ceramic"
+        },
+        "allowedClaims": [
+          "glazed"
+        ],
+        "forbiddenClaims": [
+          "frost-proof",
+          "dishwasher-safe"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "GC-PT-15-BLU",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "18.99",
+          "Currency": "EUR",
+          "Size": "15 cm",
+          "Colour": "blue",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-15-WHT",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "18.99",
+          "Currency": "EUR",
+          "Size": "15 cm",
+          "Colour": "white",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-15-GRN",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "18.99",
+          "Currency": "EUR",
+          "Size": "15 cm",
+          "Colour": "green",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-25-BLU",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "26.99",
+          "Currency": "EUR",
+          "Size": "25 cm",
+          "Colour": "blue",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-25-WHT",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "26.99",
+          "Currency": "EUR",
+          "Size": "25 cm",
+          "Colour": "white",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-25-GRN",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "26.99",
+          "Currency": "EUR",
+          "Size": "25 cm",
+          "Colour": "green",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-02-messy",
+      "expected": {
+        "titleKeywords": [
+          "ceramic",
+          "pot"
+        ],
+        "category": "Home & Garden > Planters",
+        "attributes": {
+          "material": "ceramic"
+        },
+        "allowedClaims": [
+          "glazed"
+        ],
+        "forbiddenClaims": [
+          "frost-proof",
+          "dishwasher-safe"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "GC-PT-15-BLU",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "18.99",
+          "Currency": "EUR",
+          "Size": "5.9\"",
+          "Colour": "blue",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-15-WHT",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "18.99",
+          "Currency": "EUR",
+          "Size": "5.9\"",
+          "Colour": "white",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-15-GRN",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "18.99",
+          "Currency": "EUR",
+          "Size": "5.9\"",
+          "Colour": "green",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-25-BLU",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "26.99",
+          "Currency": "EUR",
+          "Size": "9.8\"",
+          "Colour": "blue",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-25-WHT",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "26.99",
+          "Currency": "EUR",
+          "Size": "9.8\"",
+          "Colour": "white",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        },
+        {
+          "SKU": "GC-PT-25-GRN",
+          "Product Name": "Glazed Ceramic Pot",
+          "Brand": "Erdwerk",
+          "Description": "<p>Glazed ceramic pot for indoor plants.</p>",
+          "Price": "26.99",
+          "Currency": "EUR",
+          "Size": "9.8\"",
+          "Colour": "green",
+          "Material": "ceramic",
+          "Weight": "1200 g",
+          "Category": "",
+          "Notes": "Indoor use only. No drainage hole.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-03",
+      "expected": {
+        "titleKeywords": [
+          "watering",
+          "can"
+        ],
+        "category": "Home & Garden > Watering Equipment",
+        "attributes": {
+          "material": "galvanised steel"
+        },
+        "allowedClaims": [
+          "rust-resistant"
+        ],
+        "forbiddenClaims": [
+          "rustproof",
+          "BPA-free"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "WC-CN-GRY",
+          "Product Name": "Watering Can",
+          "Brand": "Gießkraft",
+          "Description": "Classic 5 litre watering can with brass rose.",
+          "Price": "34.50",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "grey",
+          "Material": "galvanised steel",
+          "Weight": "950 g",
+          "Category": "",
+          "Notes": "Rust-resistant galvanised finish.",
+          "Image": ""
+        },
+        {
+          "SKU": "WC-CN-GRN",
+          "Product Name": "Watering Can",
+          "Brand": "Gießkraft",
+          "Description": "Classic 5 litre watering can with brass rose.",
+          "Price": "34.50",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "green",
+          "Material": "galvanised steel",
+          "Weight": "950 g",
+          "Category": "",
+          "Notes": "Rust-resistant galvanised finish.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-03-messy",
+      "expected": {
+        "titleKeywords": [
+          "watering",
+          "can"
+        ],
+        "category": "Home & Garden > Watering Equipment",
+        "attributes": {
+          "material": "galvanised steel"
+        },
+        "allowedClaims": [
+          "rust-resistant"
+        ],
+        "forbiddenClaims": [
+          "rustproof",
+          "BPA-free"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "WC-CN-GRY",
+          "Product Name": "Watering Can",
+          "Brand": "Gießkraft",
+          "Description": "Classic 5 litre watering can with brass rose.",
+          "Price": "34.50",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "grey",
+          "Material": "galvanised steel",
+          "Weight": "950 g",
+          "Category": "",
+          "Notes": "Rust-resistant galvanised finish.",
+          "Image": ""
+        },
+        {
+          "SKU": "WC-CN-GRN",
+          "Product Name": "Watering Can",
+          "Brand": "Gießkraft",
+          "Description": "Classic 5 litre watering can with brass rose.",
+          "Price": "34.50",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "green",
+          "Material": "galvanised steel",
+          "Weight": "950 g",
+          "Category": "",
+          "Notes": "Rust-resistant galvanised finish.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-04",
+      "expected": {
+        "titleKeywords": [
+          "bamboo",
+          "bowl"
+        ],
+        "category": "Home & Garden > Kitchen & Dining > Serveware",
+        "attributes": {
+          "material": "bamboo"
+        },
+        "allowedClaims": [
+          "hand wash only"
+        ],
+        "forbiddenClaims": [
+          "dishwasher-safe",
+          "organic"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "BM-BW-18",
+          "Product Name": "Bamboo Serving Bowl",
+          "Brand": "Tavola",
+          "Description": "Lightweight bamboo bowl for salads and snacks.",
+          "Price": "15.99",
+          "Currency": "EUR",
+          "Size": "18 cm",
+          "Colour": "natural",
+          "Material": "bamboo",
+          "Weight": "300 g",
+          "Category": "",
+          "Notes": "Hand wash only. Not dishwasher-safe.",
+          "Image": ""
+        },
+        {
+          "SKU": "BM-BW-24",
+          "Product Name": "Bamboo Serving Bowl",
+          "Brand": "Tavola",
+          "Description": "Lightweight bamboo bowl for salads and snacks.",
+          "Price": "21.99",
+          "Currency": "EUR",
+          "Size": "24 cm",
+          "Colour": "natural",
+          "Material": "bamboo",
+          "Weight": "300 g",
+          "Category": "",
+          "Notes": "Hand wash only. Not dishwasher-safe.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-04-messy",
+      "expected": {
+        "titleKeywords": [
+          "bamboo",
+          "bowl"
+        ],
+        "category": "Home & Garden > Kitchen & Dining > Serveware",
+        "attributes": {
+          "material": "bamboo"
+        },
+        "allowedClaims": [
+          "hand wash only"
+        ],
+        "forbiddenClaims": [
+          "dishwasher-safe",
+          "organic"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "BM-BW-18",
+          "Product Name": "Bamboo Serving Bowl",
+          "Brand": "Tavola",
+          "Description": "Lightweight bamboo bowl for salads and snacks.",
+          "Price": "15.99",
+          "Currency": "EUR",
+          "Size": "7.1\"",
+          "Colour": "natrual",
+          "Material": "bamboo",
+          "Weight": "300 g",
+          "Category": "",
+          "Notes": "Nur Handwäsche. Nicht spülmaschinenfest.",
+          "Image": ""
+        },
+        {
+          "SKU": "BM-BW-24",
+          "Product Name": "Bamboo Serving Bowl",
+          "Brand": "Tavola",
+          "Description": "Lightweight bamboo bowl for salads and snacks.",
+          "Price": "21.99",
+          "Currency": "EUR",
+          "Size": "9.4\"",
+          "Colour": "natrual",
+          "Material": "bamboo",
+          "Weight": "300 g",
+          "Category": "",
+          "Notes": "Nur Handwäsche. Nicht spülmaschinenfest.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-05",
+      "expected": {
+        "titleKeywords": [
+          "linen",
+          "napkin"
+        ],
+        "category": "Home & Garden > Kitchen & Dining > Table Linens",
+        "attributes": {
+          "material": "linen"
+        },
+        "allowedClaims": [
+          "machine washable",
+          "stonewashed"
+        ],
+        "forbiddenClaims": [
+          "organic",
+          "handmade"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "LN-NP-WHT",
+          "Product Name": "Linen Napkin Set",
+          "Brand": "Tavola",
+          "Description": "Set of four stonewashed linen napkins.",
+          "Price": "29.00",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "white",
+          "Material": "linen",
+          "Weight": "250 g",
+          "Category": "",
+          "Notes": "Machine washable at 40 °C.",
+          "Image": ""
+        },
+        {
+          "SKU": "LN-NP-SAG",
+          "Product Name": "Linen Napkin Set",
+          "Brand": "Tavola",
+          "Description": "Set of four stonewashed linen napkins.",
+          "Price": "29.00",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "sage",
+          "Material": "linen",
+          "Weight": "250 g",
+          "Category": "",
+          "Notes": "Machine washable at 40 °C.",
+          "Image": ""
+        },
+        {
+          "SKU": "LN-NP-BGE",
+          "Product Name": "Linen Napkin Set",
+          "Brand": "Tavola",
+          "Description": "Set of four stonewashed linen napkins.",
+          "Price": "29.00",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "beige",
+          "Material": "linen",
+          "Weight": "250 g",
+          "Category": "",
+          "Notes": "Machine washable at 40 °C.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-05-messy",
+      "expected": {
+        "titleKeywords": [
+          "linen",
+          "napkin"
+        ],
+        "category": "Home & Garden > Kitchen & Dining > Table Linens",
+        "attributes": {
+          "material": "linen"
+        },
+        "allowedClaims": [
+          "machine washable",
+          "stonewashed"
+        ],
+        "forbiddenClaims": [
+          "organic",
+          "handmade"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "LN-NP-WHT",
+          "Product Name": "Linen Napkin Set",
+          "Brand": "Tavola",
+          "Description": "Set of four stonewashed linen napkins.",
+          "Price": "29.00",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "white",
+          "Material": "linen",
+          "Weight": "250 g",
+          "Category": "",
+          "Notes": "Machine washable at 40 °C.",
+          "Image": ""
+        },
+        {
+          "SKU": "LN-NP-SAG",
+          "Product Name": "Linen Napkin Set",
+          "Brand": "Tavola",
+          "Description": "Set of four stonewashed linen napkins.",
+          "Price": "29.00",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "sage",
+          "Material": "linen",
+          "Weight": "250 g",
+          "Category": "",
+          "Notes": "Machine washable at 40 °C.",
+          "Image": ""
+        },
+        {
+          "SKU": "LN-NP-BGE",
+          "Product Name": "Linen Napkin Set",
+          "Brand": "Tavola",
+          "Description": "Set of four stonewashed linen napkins.",
+          "Price": "29.00",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "beige",
+          "Material": "linen",
+          "Weight": "250 g",
+          "Category": "",
+          "Notes": "Machine washable at 40 °C.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-06",
+      "expected": {
+        "titleKeywords": [
+          "towel",
+          "cotton"
+        ],
+        "category": "Home & Garden > Linens & Bedding > Towels",
+        "attributes": {
+          "material": "cotton"
+        },
+        "allowedClaims": [
+          "organic",
+          "GOTS certified"
+        ],
+        "forbiddenClaims": [
+          "antibacterial"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "OC-BK-70-WHT",
+          "Product Name": "Organic Cotton Bath Towel",
+          "Brand": "Wellen",
+          "Description": "Soft bath towel, 500 gsm.",
+          "Price": "24.00",
+          "Currency": "EUR",
+          "Size": "70 cm",
+          "Colour": "white",
+          "Material": "cotton",
+          "Weight": "600 g",
+          "Category": "",
+          "Notes": "Certified organic cotton (GOTS).",
+          "Image": ""
+        },
+        {
+          "SKU": "OC-BK-70-GRY",
+          "Product Name": "Organic Cotton Bath Towel",
+          "Brand": "Wellen",
+          "Description": "Soft bath towel, 500 gsm.",
+          "Price": "24.00",
+          "Currency": "EUR",
+          "Size": "70 cm",
+          "Colour": "grey",
+          "Material": "cotton",
+          "Weight": "600 g",
+          "Category": "",
+          "Notes": "Certified organic cotton (GOTS).",
+          "Image": ""
+        },
+        {
+          "SKU": "OC-BK-100-WHT",
+          "Product Name": "Organic Cotton Bath Towel",
+          "Brand": "Wellen",
+          "Description": "Soft bath towel, 500 gsm.",
+          "Price": "33.00",
+          "Currency": "EUR",
+          "Size": "100 cm",
+          "Colour": "white",
+          "Material": "cotton",
+          "Weight": "600 g",
+          "Category": "",
+          "Notes": "Certified organic cotton (GOTS).",
+          "Image": ""
+        },
+        {
+          "SKU": "OC-BK-100-GRY",
+          "Product Name": "Organic Cotton Bath Towel",
+          "Brand": "Wellen",
+          "Description": "Soft bath towel, 500 gsm.",
+          "Price": "33.00",
+          "Currency": "EUR",
+          "Size": "100 cm",
+          "Colour": "grey",
+          "Material": "cotton",
+          "Weight": "600 g",
+          "Category": "",
+          "Notes": "Certified organic cotton (GOTS).",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-06-messy",
+      "expected": {
+        "titleKeywords": [
+          "towel",
+          "cotton"
+        ],
+        "category": "Home & Garden > Linens & Bedding > Towels",
+        "attributes": {
+          "material": "cotton"
+        },
+        "allowedClaims": [
+          "organic",
+          "GOTS certified"
+        ],
+        "forbiddenClaims": [
+          "antibacterial"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "OC-BK-70-WHT",
+          "Product Name": "Organic Cotton Bath Towel",
+          "Brand": "Wellen",
+          "Description": "Soft bath towel, 500 gsm.",
+          "Price": "24.00",
+          "Currency": "EUR",
+          "Size": "27.6\"",
+          "Colour": "white",
+          "Material": "cotton",
+          "Weight": "600 g",
+          "Category": "",
+          "Notes": "Certified organic cotton (GOTS).",
+          "Image": ""
+        },
+        {
+          "SKU": "OC-BK-70-GRY",
+          "Product Name": "Organic Cotton Bath Towel",
+          "Brand": "Wellen",
+          "Description": "Soft bath towel, 500 gsm.",
+          "Price": "24.00",
+          "Currency": "EUR",
+          "Size": "27.6\"",
+          "Colour": "grey",
+          "Material": "cotton",
+          "Weight": "600 g",
+          "Category": "",
+          "Notes": "Certified organic cotton (GOTS).",
+          "Image": ""
+        },
+        {
+          "SKU": "OC-BK-100-WHT",
+          "Product Name": "Organic Cotton Bath Towel",
+          "Brand": "Wellen",
+          "Description": "Soft bath towel, 500 gsm.",
+          "Price": "33.00",
+          "Currency": "EUR",
+          "Size": "39.4\"",
+          "Colour": "white",
+          "Material": "cotton",
+          "Weight": "600 g",
+          "Category": "",
+          "Notes": "Certified organic cotton (GOTS).",
+          "Image": ""
+        },
+        {
+          "SKU": "OC-BK-100-GRY",
+          "Product Name": "Organic Cotton Bath Towel",
+          "Brand": "Wellen",
+          "Description": "Soft bath towel, 500 gsm.",
+          "Price": "33.00",
+          "Currency": "EUR",
+          "Size": "39.4\"",
+          "Colour": "grey",
+          "Material": "cotton",
+          "Weight": "600 g",
+          "Category": "",
+          "Notes": "Certified organic cotton (GOTS).",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-07",
+      "expected": {
+        "titleKeywords": [
+          "candle"
+        ],
+        "category": "Home & Garden > Decor > Candles",
+        "attributes": {
+          "material": "soy wax"
+        },
+        "allowedClaims": [
+          "hand-poured",
+          "handmade"
+        ],
+        "forbiddenClaims": [
+          "non-toxic",
+          "organic"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "CN-SY-8",
+          "Product Name": "Soy Wax Candle",
+          "Brand": "Lumen",
+          "Description": "Hand-poured soy wax candle with cotton wick.",
+          "Price": "14.50",
+          "Currency": "EUR",
+          "Size": "8 cm",
+          "Colour": "cream",
+          "Material": "soy wax",
+          "Weight": "350 g",
+          "Category": "",
+          "Notes": "Burn time approx. 40 hours. Handmade in Germany.",
+          "Image": ""
+        },
+        {
+          "SKU": "CN-SY-12",
+          "Product Name": "Soy Wax Candle",
+          "Brand": "Lumen",
+          "Description": "Hand-poured soy wax candle with cotton wick.",
+          "Price": "21.50",
+          "Currency": "EUR",
+          "Size": "12 cm",
+          "Colour": "cream",
+          "Material": "soy wax",
+          "Weight": "350 g",
+          "Category": "",
+          "Notes": "Burn time approx. 40 hours. Handmade in Germany.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-07-messy",
+      "expected": {
+        "titleKeywords": [
+          "candle"
+        ],
+        "category": "Home & Garden > Decor > Candles",
+        "attributes": {
+          "material": "soy wax"
+        },
+        "allowedClaims": [
+          "hand-poured",
+          "handmade"
+        ],
+        "forbiddenClaims": [
+          "non-toxic",
+          "organic"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "CN-SY-8",
+          "Product Name": "Soy Wax Candle",
+          "Brand": "Lumen",
+          "Description": "Hand-poured soy wax candle with cotton wick.",
+          "Price": "14.50",
+          "Currency": "EUR",
+          "Size": "3.1\"",
+          "Colour": "creme",
+          "Material": "soy wax",
+          "Weight": "350 g",
+          "Category": "",
+          "Notes": "Brenndauer ca. 40 Stunden. Handgefertigt in Deutschland.",
+          "Image": ""
+        },
+        {
+          "SKU": "CN-SY-12",
+          "Product Name": "Soy Wax Candle",
+          "Brand": "Lumen",
+          "Description": "Hand-poured soy wax candle with cotton wick.",
+          "Price": "21.50",
+          "Currency": "EUR",
+          "Size": "4.7\"",
+          "Colour": "creme",
+          "Material": "soy wax",
+          "Weight": "350 g",
+          "Category": "",
+          "Notes": "Brenndauer ca. 40 Stunden. Handgefertigt in Deutschland.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-08",
+      "expected": {
+        "titleKeywords": [
+          "gloves"
+        ],
+        "category": "Home & Garden > Gardening > Gardening Gloves",
+        "attributes": {
+          "material": "leather"
+        },
+        "allowedClaims": [
+          "water-resistant"
+        ],
+        "forbiddenClaims": [
+          "waterproof",
+          "cut-proof"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "SH-GL",
+          "Product Name": "Garden Gloves",
+          "Brand": "Gießkraft",
+          "Description": "Goatskin leather gardening gloves.",
+          "Price": "12.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "brown",
+          "Material": "leather",
+          "Weight": "150 g",
+          "Category": "",
+          "Notes": "Water-resistant, not waterproof.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-08-messy",
+      "expected": {
+        "titleKeywords": [
+          "gloves"
+        ],
+        "category": "Home & Garden > Gardening > Gardening Gloves",
+        "attributes": {
+          "material": "leather"
+        },
+        "allowedClaims": [
+          "water-resistant"
+        ],
+        "forbiddenClaims": [
+          "waterproof",
+          "cut-proof"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "SH-GL",
+          "Product Name": "Garden Gloves",
+          "Brand": "Gießkraft",
+          "Description": "Goatskin leather gardening gloves.",
+          "Price": "12.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "brown",
+          "Material": "leather",
+          "Weight": "150 g",
+          "Category": "",
+          "Notes": "Water-resistant, not waterproof.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-09",
+      "expected": {
+        "titleKeywords": [
+          "pruning",
+          "shears"
+        ],
+        "category": "Home & Garden > Gardening > Gardening Tools",
+        "attributes": {
+          "material": "stainless steel"
+        },
+        "allowedClaims": [
+          "lifetime warranty"
+        ],
+        "forbiddenClaims": [
+          "rustproof",
+          "dishwasher-safe"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "PR-SH-20-RED",
+          "Product Name": "Pruning Shears",
+          "Brand": "Schnittmeister",
+          "Description": "Bypass pruning shears with stainless steel blades.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "20 cm",
+          "Colour": "red",
+          "Material": "stainless steel",
+          "Weight": "240 g",
+          "Category": "",
+          "Notes": "Lifetime warranty on blades.",
+          "Image": ""
+        },
+        {
+          "SKU": "PR-SH-20-BLK",
+          "Product Name": "Pruning Shears",
+          "Brand": "Schnittmeister",
+          "Description": "Bypass pruning shears with stainless steel blades.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "20 cm",
+          "Colour": "black",
+          "Material": "stainless steel",
+          "Weight": "240 g",
+          "Category": "",
+          "Notes": "Lifetime warranty on blades.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-09-messy",
+      "expected": {
+        "titleKeywords": [
+          "pruning",
+          "shears"
+        ],
+        "category": "Home & Garden > Gardening > Gardening Tools",
+        "attributes": {
+          "material": "stainless steel"
+        },
+        "allowedClaims": [
+          "lifetime warranty"
+        ],
+        "forbiddenClaims": [
+          "rustproof",
+          "dishwasher-safe"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "PR-SH-20-RED",
+          "Product Name": "Pruning Shears",
+          "Brand": "Schnittmeister",
+          "Description": "Bypass pruning shears with stainless steel blades.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "7.9\"",
+          "Colour": "red",
+          "Material": "stainless steel",
+          "Weight": "240 g",
+          "Category": "",
+          "Notes": "Lifetime warranty on blades.",
+          "Image": ""
+        },
+        {
+          "SKU": "PR-SH-20-BLK",
+          "Product Name": "Pruning Shears",
+          "Brand": "Schnittmeister",
+          "Description": "Bypass pruning shears with stainless steel blades.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "7.9\"",
+          "Colour": "black",
+          "Material": "stainless steel",
+          "Weight": "240 g",
+          "Category": "",
+          "Notes": "Lifetime warranty on blades.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-10",
+      "expected": {
+        "titleKeywords": [
+          "raised",
+          "bed"
+        ],
+        "category": "Home & Garden > Gardening > Raised Garden Beds",
+        "attributes": {
+          "material": "larch wood"
+        },
+        "allowedClaims": [
+          "untreated",
+          "weather-resistant"
+        ],
+        "forbiddenClaims": [
+          "rot-proof",
+          "organic"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "RB-BX-80",
+          "Product Name": "Raised Bed Kit",
+          "Brand": "Holzhaus",
+          "Description": "Untreated larch raised bed, easy assembly.",
+          "Price": "89.00",
+          "Currency": "EUR",
+          "Size": "80 cm",
+          "Colour": "natural",
+          "Material": "larch wood",
+          "Weight": "14000 g",
+          "Category": "",
+          "Notes": "Untreated wood. Weather-resistant.",
+          "Image": ""
+        },
+        {
+          "SKU": "RB-BX-120",
+          "Product Name": "Raised Bed Kit",
+          "Brand": "Holzhaus",
+          "Description": "Untreated larch raised bed, easy assembly.",
+          "Price": "119.00",
+          "Currency": "EUR",
+          "Size": "120 cm",
+          "Colour": "natural",
+          "Material": "larch wood",
+          "Weight": "14000 g",
+          "Category": "",
+          "Notes": "Untreated wood. Weather-resistant.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-10-messy",
+      "expected": {
+        "titleKeywords": [
+          "raised",
+          "bed"
+        ],
+        "category": "Home & Garden > Gardening > Raised Garden Beds",
+        "attributes": {
+          "material": "larch wood"
+        },
+        "allowedClaims": [
+          "untreated",
+          "weather-resistant"
+        ],
+        "forbiddenClaims": [
+          "rot-proof",
+          "organic"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "RB-BX-80",
+          "Product Name": "Raised Bed Kit",
+          "Brand": "Holzhaus",
+          "Description": "Untreated larch raised bed, easy assembly.",
+          "Price": "89.00",
+          "Currency": "EUR",
+          "Size": "31.5\"",
+          "Colour": "natrual",
+          "Material": "larch wood",
+          "Weight": "14000 g",
+          "Category": "",
+          "Notes": "Untreated wood. Weather-resistant.",
+          "Image": ""
+        },
+        {
+          "SKU": "RB-BX-120",
+          "Product Name": "Raised Bed Kit",
+          "Brand": "Holzhaus",
+          "Description": "Untreated larch raised bed, easy assembly.",
+          "Price": "119.00",
+          "Currency": "EUR",
+          "Size": "47.2\"",
+          "Colour": "natrual",
+          "Material": "larch wood",
+          "Weight": "14000 g",
+          "Category": "",
+          "Notes": "Untreated wood. Weather-resistant.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-11",
+      "expected": {
+        "titleKeywords": [
+          "bird",
+          "feeder"
+        ],
+        "category": "Home & Garden > Lawn & Garden > Bird Feeders",
+        "attributes": {
+          "material": "pine wood"
+        },
+        "allowedClaims": [
+          "FSC certified"
+        ],
+        "forbiddenClaims": [
+          "squirrel-proof"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "BF-FD-NAT",
+          "Product Name": "Bird Feeder",
+          "Brand": "Holzhaus",
+          "Description": "Hanging pine bird feeder.",
+          "Price": "19.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "natural",
+          "Material": "pine wood",
+          "Weight": "700 g",
+          "Category": "",
+          "Notes": "FSC certified wood.",
+          "Image": ""
+        },
+        {
+          "SKU": "BF-FD-GRN",
+          "Product Name": "Bird Feeder",
+          "Brand": "Holzhaus",
+          "Description": "Hanging pine bird feeder.",
+          "Price": "19.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "green",
+          "Material": "pine wood",
+          "Weight": "700 g",
+          "Category": "",
+          "Notes": "FSC certified wood.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-11-messy",
+      "expected": {
+        "titleKeywords": [
+          "bird",
+          "feeder"
+        ],
+        "category": "Home & Garden > Lawn & Garden > Bird Feeders",
+        "attributes": {
+          "material": "pine wood"
+        },
+        "allowedClaims": [
+          "FSC certified"
+        ],
+        "forbiddenClaims": [
+          "squirrel-proof"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "BF-FD-NAT",
+          "Product Name": "Bird Feeder",
+          "Brand": "Holzhaus",
+          "Description": "Hanging pine bird feeder.",
+          "Price": "19.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "natrual",
+          "Material": "pine wood",
+          "Weight": "700 g",
+          "Category": "",
+          "Notes": "FSC certified wood.",
+          "Image": ""
+        },
+        {
+          "SKU": "BF-FD-GRN",
+          "Product Name": "Bird Feeder",
+          "Brand": "Holzhaus",
+          "Description": "Hanging pine bird feeder.",
+          "Price": "19.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "green",
+          "Material": "pine wood",
+          "Weight": "700 g",
+          "Category": "",
+          "Notes": "FSC certified wood.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-12",
+      "expected": {
+        "titleKeywords": [
+          "lantern",
+          "solar"
+        ],
+        "category": "Home & Garden > Lighting > Outdoor Lighting",
+        "attributes": {
+          "material": "aluminium"
+        },
+        "allowedClaims": [
+          "IP44",
+          "splash-proof"
+        ],
+        "forbiddenClaims": [
+          "waterproof"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "WL-LT-25-BLK",
+          "Product Name": "Solar Wall Lantern",
+          "Brand": "Lumen",
+          "Description": "Solar powered wall lantern with dusk sensor.",
+          "Price": "39.99",
+          "Currency": "EUR",
+          "Size": "25 cm",
+          "Colour": "black",
+          "Material": "aluminium",
+          "Weight": "800 g",
+          "Category": "",
+          "Notes": "IP44 splash-proof.",
+          "Image": ""
+        },
+        {
+          "SKU": "WL-LT-25-ANT",
+          "Product Name": "Solar Wall Lantern",
+          "Brand": "Lumen",
+          "Description": "Solar powered wall lantern with dusk sensor.",
+          "Price": "39.99",
+          "Currency": "EUR",
+          "Size": "25 cm",
+          "Colour": "anthracite",
+          "Material": "aluminium",
+          "Weight": "800 g",
+          "Category": "",
+          "Notes": "IP44 splash-proof.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-12-messy",
+      "expected": {
+        "titleKeywords": [
+          "lantern",
+          "solar"
+        ],
+        "category": "Home & Garden > Lighting > Outdoor Lighting",
+        "attributes": {
+          "material": "aluminium"
+        },
+        "allowedClaims": [
+          "IP44",
+          "splash-proof"
+        ],
+        "forbiddenClaims": [
+          "waterproof"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "WL-LT-25-BLK",
+          "Product Name": "Solar Wall Lantern",
+          "Brand": "Lumen",
+          "Description": "Solar powered wall lantern with dusk sensor.",
+          "Price": "39.99",
+          "Currency": "EUR",
+          "Size": "9.8\"",
+          "Colour": "black",
+          "Material": "aluminium",
+          "Weight": "800 g",
+          "Category": "",
+          "Notes": "IP44 splash-proof.",
+          "Image": ""
+        },
+        {
+          "SKU": "WL-LT-25-ANT",
+          "Product Name": "Solar Wall Lantern",
+          "Brand": "Lumen",
+          "Description": "Solar powered wall lantern with dusk sensor.",
+          "Price": "39.99",
+          "Currency": "EUR",
+          "Size": "9.8\"",
+          "Colour": "antracite",
+          "Material": "aluminium",
+          "Weight": "800 g",
+          "Category": "",
+          "Notes": "IP44 splash-proof.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-13",
+      "expected": {
+        "titleKeywords": [
+          "cushion"
+        ],
+        "category": "Home & Garden > Lawn & Garden > Outdoor Furniture Accessories",
+        "attributes": {
+          "material": "polyester"
+        },
+        "allowedClaims": [
+          "water-repellent",
+          "removable cover"
+        ],
+        "forbiddenClaims": [
+          "waterproof",
+          "UV-resistant"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "SC-CU-40-GRY",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "22.99",
+          "Currency": "EUR",
+          "Size": "40 cm",
+          "Colour": "grey",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-40-TER",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "22.99",
+          "Currency": "EUR",
+          "Size": "40 cm",
+          "Colour": "terracotta",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-40-OLI",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "22.99",
+          "Currency": "EUR",
+          "Size": "40 cm",
+          "Colour": "olive",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-50-GRY",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "50 cm",
+          "Colour": "grey",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-50-TER",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "50 cm",
+          "Colour": "terracotta",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-50-OLI",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "50 cm",
+          "Colour": "olive",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-13-messy",
+      "expected": {
+        "titleKeywords": [
+          "cushion"
+        ],
+        "category": "Home & Garden > Lawn & Garden > Outdoor Furniture Accessories",
+        "attributes": {
+          "material": "polyester"
+        },
+        "allowedClaims": [
+          "water-repellent",
+          "removable cover"
+        ],
+        "forbiddenClaims": [
+          "waterproof",
+          "UV-resistant"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "SC-CU-40-GRY",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "22.99",
+          "Currency": "EUR",
+          "Size": "15.7\"",
+          "Colour": "grey",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-40-TER",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "22.99",
+          "Currency": "EUR",
+          "Size": "15.7\"",
+          "Colour": "terracota",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-40-OLI",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "22.99",
+          "Currency": "EUR",
+          "Size": "15.7\"",
+          "Colour": "olvie",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-50-GRY",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "19.7\"",
+          "Colour": "grey",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-50-TER",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "19.7\"",
+          "Colour": "terracota",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        },
+        {
+          "SKU": "SC-CU-50-OLI",
+          "Product Name": "Outdoor Seat Cushion",
+          "Brand": "Wellen",
+          "Description": "Water-repellent outdoor cushion.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "19.7\"",
+          "Colour": "olvie",
+          "Material": "polyester",
+          "Weight": "400 g",
+          "Category": "",
+          "Notes": "Water-repellent fabric. Cover removable.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-14",
+      "expected": {
+        "titleKeywords": [
+          "herb",
+          "seed"
+        ],
+        "category": "Home & Garden > Gardening > Seeds",
+        "attributes": {
+          "material": "seeds"
+        },
+        "allowedClaims": [
+          "organic"
+        ],
+        "forbiddenClaims": [
+          "non-GMO",
+          "heirloom"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "HB-PS",
+          "Product Name": "Herb Seed Set",
+          "Brand": "Saatgut Nord",
+          "Description": "Six varieties of culinary herb seeds.",
+          "Price": "9.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "multicolour",
+          "Material": "seeds",
+          "Weight": "80 g",
+          "Category": "",
+          "Notes": "Organic seeds, EU organic certified.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-14-messy",
+      "expected": {
+        "titleKeywords": [
+          "herb",
+          "seed"
+        ],
+        "category": "Home & Garden > Gardening > Seeds",
+        "attributes": {
+          "material": "seeds"
+        },
+        "allowedClaims": [
+          "organic"
+        ],
+        "forbiddenClaims": [
+          "non-GMO",
+          "heirloom"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "HB-PS",
+          "Product Name": "Herb Seed Set",
+          "Brand": "Saatgut Nord",
+          "Description": "Six varieties of culinary herb seeds.",
+          "Price": "9.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "multicolour",
+          "Material": "seeds",
+          "Weight": "80 g",
+          "Category": "",
+          "Notes": "Organic seeds, EU organic certified.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-15",
+      "expected": {
+        "titleKeywords": [
+          "chopping",
+          "board"
+        ],
+        "category": "Home & Garden > Kitchen & Dining > Cutting Boards",
+        "attributes": {
+          "material": "oak wood"
+        },
+        "allowedClaims": [
+          "food-safe finish",
+          "hand wash only"
+        ],
+        "forbiddenClaims": [
+          "antibacterial",
+          "dishwasher-safe"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "CB-BD-30",
+          "Product Name": "Chopping Board",
+          "Brand": "Tavola",
+          "Description": "Solid oak chopping board with juice groove.",
+          "Price": "32.99",
+          "Currency": "EUR",
+          "Size": "30 cm",
+          "Colour": "natural",
+          "Material": "oak wood",
+          "Weight": "1100 g",
+          "Category": "",
+          "Notes": "Food-safe oil finish. Hand wash only.",
+          "Image": ""
+        },
+        {
+          "SKU": "CB-BD-40",
+          "Product Name": "Chopping Board",
+          "Brand": "Tavola",
+          "Description": "Solid oak chopping board with juice groove.",
+          "Price": "42.99",
+          "Currency": "EUR",
+          "Size": "40 cm",
+          "Colour": "natural",
+          "Material": "oak wood",
+          "Weight": "1100 g",
+          "Category": "",
+          "Notes": "Food-safe oil finish. Hand wash only.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-15-messy",
+      "expected": {
+        "titleKeywords": [
+          "chopping",
+          "board"
+        ],
+        "category": "Home & Garden > Kitchen & Dining > Cutting Boards",
+        "attributes": {
+          "material": "oak wood"
+        },
+        "allowedClaims": [
+          "food-safe finish",
+          "hand wash only"
+        ],
+        "forbiddenClaims": [
+          "antibacterial",
+          "dishwasher-safe"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "CB-BD-30",
+          "Product Name": "Chopping Board",
+          "Brand": "Tavola",
+          "Description": "Solid oak chopping board with juice groove.",
+          "Price": "32.99",
+          "Currency": "EUR",
+          "Size": "11.8\"",
+          "Colour": "natrual",
+          "Material": "oak wood",
+          "Weight": "1100 g",
+          "Category": "",
+          "Notes": "Food-safe oil finish. Hand wash only.",
+          "Image": ""
+        },
+        {
+          "SKU": "CB-BD-40",
+          "Product Name": "Chopping Board",
+          "Brand": "Tavola",
+          "Description": "Solid oak chopping board with juice groove.",
+          "Price": "42.99",
+          "Currency": "EUR",
+          "Size": "15.7\"",
+          "Colour": "natrual",
+          "Material": "oak wood",
+          "Weight": "1100 g",
+          "Category": "",
+          "Notes": "Food-safe oil finish. Hand wash only.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-16",
+      "expected": {
+        "titleKeywords": [
+          "mug"
+        ],
+        "category": "Home & Garden > Kitchen & Dining > Drinkware",
+        "attributes": {
+          "material": "stoneware"
+        },
+        "allowedClaims": [
+          "dishwasher-safe",
+          "microwave-safe"
+        ],
+        "forbiddenClaims": [
+          "handmade",
+          "lead-free"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "ST-MG-9-SAN",
+          "Product Name": "Stoneware Mug",
+          "Brand": "Erdwerk",
+          "Description": "Reactive glaze stoneware mug, 350 ml.",
+          "Price": "14.99",
+          "Currency": "EUR",
+          "Size": "9 cm",
+          "Colour": "sand",
+          "Material": "stoneware",
+          "Weight": "380 g",
+          "Category": "",
+          "Notes": "Dishwasher-safe and microwave-safe.",
+          "Image": ""
+        },
+        {
+          "SKU": "ST-MG-9-BLU",
+          "Product Name": "Stoneware Mug",
+          "Brand": "Erdwerk",
+          "Description": "Reactive glaze stoneware mug, 350 ml.",
+          "Price": "14.99",
+          "Currency": "EUR",
+          "Size": "9 cm",
+          "Colour": "blue",
+          "Material": "stoneware",
+          "Weight": "380 g",
+          "Category": "",
+          "Notes": "Dishwasher-safe and microwave-safe.",
+          "Image": ""
+        },
+        {
+          "SKU": "ST-MG-9-BLK",
+          "Product Name": "Stoneware Mug",
+          "Brand": "Erdwerk",
+          "Description": "Reactive glaze stoneware mug, 350 ml.",
+          "Price": "14.99",
+          "Currency": "EUR",
+          "Size": "9 cm",
+          "Colour": "black",
+          "Material": "stoneware",
+          "Weight": "380 g",
+          "Category": "",
+          "Notes": "Dishwasher-safe and microwave-safe.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-16-messy",
+      "expected": {
+        "titleKeywords": [
+          "mug"
+        ],
+        "category": "Home & Garden > Kitchen & Dining > Drinkware",
+        "attributes": {
+          "material": "stoneware"
+        },
+        "allowedClaims": [
+          "dishwasher-safe",
+          "microwave-safe"
+        ],
+        "forbiddenClaims": [
+          "handmade",
+          "lead-free"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "ST-MG-9-SAN",
+          "Product Name": "Stoneware Mug",
+          "Brand": "Erdwerk",
+          "Description": "Reactive glaze stoneware mug, 350 ml.",
+          "Price": "14.99",
+          "Currency": "EUR",
+          "Size": "3.5\"",
+          "Colour": "sand",
+          "Material": "stoneware",
+          "Weight": "380 g",
+          "Category": "",
+          "Notes": "Dishwasher-safe and microwave-safe.",
+          "Image": ""
+        },
+        {
+          "SKU": "ST-MG-9-BLU",
+          "Product Name": "Stoneware Mug",
+          "Brand": "Erdwerk",
+          "Description": "Reactive glaze stoneware mug, 350 ml.",
+          "Price": "14.99",
+          "Currency": "EUR",
+          "Size": "3.5\"",
+          "Colour": "blue",
+          "Material": "stoneware",
+          "Weight": "380 g",
+          "Category": "",
+          "Notes": "Dishwasher-safe and microwave-safe.",
+          "Image": ""
+        },
+        {
+          "SKU": "ST-MG-9-BLK",
+          "Product Name": "Stoneware Mug",
+          "Brand": "Erdwerk",
+          "Description": "Reactive glaze stoneware mug, 350 ml.",
+          "Price": "14.99",
+          "Currency": "EUR",
+          "Size": "3.5\"",
+          "Colour": "black",
+          "Material": "stoneware",
+          "Weight": "380 g",
+          "Category": "",
+          "Notes": "Dishwasher-safe and microwave-safe.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-17",
+      "expected": {
+        "titleKeywords": [
+          "basket"
+        ],
+        "category": "Home & Garden > Storage & Organisation > Baskets",
+        "attributes": {
+          "material": "seagrass"
+        },
+        "allowedClaims": [
+          "handwoven"
+        ],
+        "forbiddenClaims": [
+          "waterproof",
+          "organic"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "WT-TY-30",
+          "Product Name": "Woven Storage Basket",
+          "Brand": "Flechtwerk",
+          "Description": "Handwoven seagrass basket with handles.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "30 cm",
+          "Colour": "natural",
+          "Material": "seagrass",
+          "Weight": "650 g",
+          "Category": "",
+          "Notes": "Handwoven by artisans in Vietnam.",
+          "Image": ""
+        },
+        {
+          "SKU": "WT-TY-40",
+          "Product Name": "Woven Storage Basket",
+          "Brand": "Flechtwerk",
+          "Description": "Handwoven seagrass basket with handles.",
+          "Price": "36.99",
+          "Currency": "EUR",
+          "Size": "40 cm",
+          "Colour": "natural",
+          "Material": "seagrass",
+          "Weight": "650 g",
+          "Category": "",
+          "Notes": "Handwoven by artisans in Vietnam.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-17-messy",
+      "expected": {
+        "titleKeywords": [
+          "basket"
+        ],
+        "category": "Home & Garden > Storage & Organisation > Baskets",
+        "attributes": {
+          "material": "seagrass"
+        },
+        "allowedClaims": [
+          "handwoven"
+        ],
+        "forbiddenClaims": [
+          "waterproof",
+          "organic"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "WT-TY-30",
+          "Product Name": "Woven Storage Basket",
+          "Brand": "Flechtwerk",
+          "Description": "Handwoven seagrass basket with handles.",
+          "Price": "27.99",
+          "Currency": "EUR",
+          "Size": "11.8\"",
+          "Colour": "natrual",
+          "Material": "seagrass",
+          "Weight": "650 g",
+          "Category": "",
+          "Notes": "Handwoven by artisans in Vietnam.",
+          "Image": ""
+        },
+        {
+          "SKU": "WT-TY-40",
+          "Product Name": "Woven Storage Basket",
+          "Brand": "Flechtwerk",
+          "Description": "Handwoven seagrass basket with handles.",
+          "Price": "36.99",
+          "Currency": "EUR",
+          "Size": "15.7\"",
+          "Colour": "natrual",
+          "Material": "seagrass",
+          "Weight": "650 g",
+          "Category": "",
+          "Notes": "Handwoven by artisans in Vietnam.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-18",
+      "expected": {
+        "titleKeywords": [
+          "hammock"
+        ],
+        "category": "Home & Garden > Lawn & Garden > Hammocks",
+        "attributes": {
+          "material": "cotton"
+        },
+        "allowedClaims": [
+          "max load 120 kg"
+        ],
+        "forbiddenClaims": [
+          "weatherproof",
+          "UV-resistant"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "HM-HK-200-CRE",
+          "Product Name": "Garden Hammock",
+          "Brand": "Wellen",
+          "Description": "Cotton hammock, max load 120 kg.",
+          "Price": "69.00",
+          "Currency": "EUR",
+          "Size": "200 cm",
+          "Colour": "cream",
+          "Material": "cotton",
+          "Weight": "2100 g",
+          "Category": "",
+          "Notes": "Max. load 120 kg. Bring indoors when wet.",
+          "Image": ""
+        },
+        {
+          "SKU": "HM-HK-200-BLU",
+          "Product Name": "Garden Hammock",
+          "Brand": "Wellen",
+          "Description": "Cotton hammock, max load 120 kg.",
+          "Price": "69.00",
+          "Currency": "EUR",
+          "Size": "200 cm",
+          "Colour": "blue",
+          "Material": "cotton",
+          "Weight": "2100 g",
+          "Category": "",
+          "Notes": "Max. load 120 kg. Bring indoors when wet.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-18-messy",
+      "expected": {
+        "titleKeywords": [
+          "hammock"
+        ],
+        "category": "Home & Garden > Lawn & Garden > Hammocks",
+        "attributes": {
+          "material": "cotton"
+        },
+        "allowedClaims": [
+          "max load 120 kg"
+        ],
+        "forbiddenClaims": [
+          "weatherproof",
+          "UV-resistant"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "HM-HK-200-CRE",
+          "Product Name": "Garden Hammock",
+          "Brand": "Wellen",
+          "Description": "Cotton hammock, max load 120 kg.",
+          "Price": "69.00",
+          "Currency": "EUR",
+          "Size": "78.7\"",
+          "Colour": "creme",
+          "Material": "cotton",
+          "Weight": "2100 g",
+          "Category": "",
+          "Notes": "Max. load 120 kg. Bring indoors when wet.",
+          "Image": ""
+        },
+        {
+          "SKU": "HM-HK-200-BLU",
+          "Product Name": "Garden Hammock",
+          "Brand": "Wellen",
+          "Description": "Cotton hammock, max load 120 kg.",
+          "Price": "69.00",
+          "Currency": "EUR",
+          "Size": "78.7\"",
+          "Colour": "blue",
+          "Material": "cotton",
+          "Weight": "2100 g",
+          "Category": "",
+          "Notes": "Max. load 120 kg. Bring indoors when wet.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-19",
+      "expected": {
+        "titleKeywords": [
+          "mister"
+        ],
+        "category": "Home & Garden > Watering Equipment",
+        "attributes": {
+          "material": "copper"
+        },
+        "allowedClaims": [
+          "copper plated"
+        ],
+        "forbiddenClaims": [
+          "solid copper"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "CP-PT",
+          "Product Name": "Copper Plant Mister",
+          "Brand": "Gießkraft",
+          "Description": "Copper plated plant mister, 250 ml.",
+          "Price": "24.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "copper",
+          "Material": "copper",
+          "Weight": "200 g",
+          "Category": "",
+          "Notes": "Copper plated (not solid copper).",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-19-messy",
+      "expected": {
+        "titleKeywords": [
+          "mister"
+        ],
+        "category": "Home & Garden > Watering Equipment",
+        "attributes": {
+          "material": "copper"
+        },
+        "allowedClaims": [
+          "copper plated"
+        ],
+        "forbiddenClaims": [
+          "solid copper"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "CP-PT",
+          "Product Name": "Copper Plant Mister",
+          "Brand": "Gießkraft",
+          "Description": "Copper plated plant mister, 250 ml.",
+          "Price": "24.99",
+          "Currency": "EUR",
+          "Size": "",
+          "Colour": "copper",
+          "Material": "copper",
+          "Weight": "200 g",
+          "Category": "",
+          "Notes": "Copper plated (not solid copper).",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-20",
+      "expected": {
+        "titleKeywords": [
+          "teak",
+          "bench"
+        ],
+        "category": "Home & Garden > Lawn & Garden > Outdoor Furniture",
+        "attributes": {
+          "material": "teak wood"
+        },
+        "allowedClaims": [
+          "FSC certified",
+          "solid teak"
+        ],
+        "forbiddenClaims": [
+          "maintenance-free",
+          "weatherproof"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "TK-BN-120",
+          "Product Name": "Teak Garden Bench",
+          "Brand": "Holzhaus",
+          "Description": "Solid teak three-seater garden bench.",
+          "Price": "1299.00",
+          "Currency": "EUR",
+          "Size": "120 cm",
+          "Colour": "natural",
+          "Material": "teak wood",
+          "Weight": "22000 g",
+          "Category": "",
+          "Notes": "Grade A teak from FSC certified plantations. Oil yearly.",
+          "Image": ""
+        },
+        {
+          "SKU": "TK-BN-150",
+          "Product Name": "Teak Garden Bench",
+          "Brand": "Holzhaus",
+          "Description": "Solid teak three-seater garden bench.",
+          "Price": "1599.00",
+          "Currency": "EUR",
+          "Size": "150 cm",
+          "Colour": "natural",
+          "Material": "teak wood",
+          "Weight": "22000 g",
+          "Category": "",
+          "Notes": "Grade A teak from FSC certified plantations. Oil yearly.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-20-messy",
+      "expected": {
+        "titleKeywords": [
+          "teak",
+          "bench"
+        ],
+        "category": "Home & Garden > Lawn & Garden > Outdoor Furniture",
+        "attributes": {
+          "material": "teak wood"
+        },
+        "allowedClaims": [
+          "FSC certified",
+          "solid teak"
+        ],
+        "forbiddenClaims": [
+          "maintenance-free",
+          "weatherproof"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "TK-BN-120",
+          "Product Name": "Teak Garden Bench",
+          "Brand": "Holzhaus",
+          "Description": "Solid teak three-seater garden bench.",
+          "Price": "1299.00",
+          "Currency": "EUR",
+          "Size": "47.2\"",
+          "Colour": "natrual",
+          "Material": "teak wood",
+          "Weight": "22000 g",
+          "Category": "",
+          "Notes": "Grade A teak from FSC certified plantations. Oil yearly.",
+          "Image": ""
+        },
+        {
+          "SKU": "TK-BN-150",
+          "Product Name": "Teak Garden Bench",
+          "Brand": "Holzhaus",
+          "Description": "Solid teak three-seater garden bench.",
+          "Price": "1599.00",
+          "Currency": "EUR",
+          "Size": "59.1\"",
+          "Colour": "natrual",
+          "Material": "teak wood",
+          "Weight": "22000 g",
+          "Category": "",
+          "Notes": "Grade A teak from FSC certified plantations. Oil yearly.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-21",
+      "expected": {
+        "titleKeywords": [
+          "door",
+          "mat"
+        ],
+        "category": "Home & Garden > Decor > Door Mats",
+        "attributes": {
+          "material": "coir"
+        },
+        "allowedClaims": [
+          "non-slip"
+        ],
+        "forbiddenClaims": [
+          "weatherproof",
+          "eco-friendly"
+        ]
+      },
+      "variant": "clean",
+      "rows": [
+        {
+          "SKU": "DR-MT-60-NAT",
+          "Product Name": "Coir Door Mat",
+          "Brand": "Flechtwerk",
+          "Description": "Natural coir door mat with non-slip backing.",
+          "Price": "21.99",
+          "Currency": "EUR",
+          "Size": "60 cm",
+          "Colour": "natural",
+          "Material": "coir",
+          "Weight": "1600 g",
+          "Category": "",
+          "Notes": "Non-slip PVC backing. For covered outdoor areas.",
+          "Image": ""
+        },
+        {
+          "SKU": "DR-MT-60-BLK",
+          "Product Name": "Coir Door Mat",
+          "Brand": "Flechtwerk",
+          "Description": "Natural coir door mat with non-slip backing.",
+          "Price": "21.99",
+          "Currency": "EUR",
+          "Size": "60 cm",
+          "Colour": "black",
+          "Material": "coir",
+          "Weight": "1600 g",
+          "Category": "",
+          "Notes": "Non-slip PVC backing. For covered outdoor areas.",
+          "Image": ""
+        },
+        {
+          "SKU": "DR-MT-75-NAT",
+          "Product Name": "Coir Door Mat",
+          "Brand": "Flechtwerk",
+          "Description": "Natural coir door mat with non-slip backing.",
+          "Price": "28.99",
+          "Currency": "EUR",
+          "Size": "75 cm",
+          "Colour": "natural",
+          "Material": "coir",
+          "Weight": "1600 g",
+          "Category": "",
+          "Notes": "Non-slip PVC backing. For covered outdoor areas.",
+          "Image": ""
+        },
+        {
+          "SKU": "DR-MT-75-BLK",
+          "Product Name": "Coir Door Mat",
+          "Brand": "Flechtwerk",
+          "Description": "Natural coir door mat with non-slip backing.",
+          "Price": "28.99",
+          "Currency": "EUR",
+          "Size": "75 cm",
+          "Colour": "black",
+          "Material": "coir",
+          "Weight": "1600 g",
+          "Category": "",
+          "Notes": "Non-slip PVC backing. For covered outdoor areas.",
+          "Image": ""
+        }
+      ]
+    },
+    {
+      "id": "eval-21-messy",
+      "expected": {
+        "titleKeywords": [
+          "door",
+          "mat"
+        ],
+        "category": "Home & Garden > Decor > Door Mats",
+        "attributes": {
+          "material": "coir"
+        },
+        "allowedClaims": [
+          "non-slip"
+        ],
+        "forbiddenClaims": [
+          "weatherproof",
+          "eco-friendly"
+        ]
+      },
+      "variant": "messy",
+      "rows": [
+        {
+          "SKU": "DR-MT-60-NAT",
+          "Product Name": "Coir Door Mat",
+          "Brand": "Flechtwerk",
+          "Description": "Natural coir door mat with non-slip backing.",
+          "Price": "21.99",
+          "Currency": "EUR",
+          "Size": "23.6\"",
+          "Colour": "natrual",
+          "Material": "coir",
+          "Weight": "1600 g",
+          "Category": "",
+          "Notes": "Non-slip PVC backing. For covered outdoor areas.",
+          "Image": ""
+        },
+        {
+          "SKU": "DR-MT-60-BLK",
+          "Product Name": "Coir Door Mat",
+          "Brand": "Flechtwerk",
+          "Description": "Natural coir door mat with non-slip backing.",
+          "Price": "21.99",
+          "Currency": "EUR",
+          "Size": "23.6\"",
+          "Colour": "black",
+          "Material": "coir",
+          "Weight": "1600 g",
+          "Category": "",
+          "Notes": "Non-slip PVC backing. For covered outdoor areas.",
+          "Image": ""
+        },
+        {
+          "SKU": "DR-MT-75-NAT",
+          "Product Name": "Coir Door Mat",
+          "Brand": "Flechtwerk",
+          "Description": "Natural coir door mat with non-slip backing.",
+          "Price": "28.99",
+          "Currency": "EUR",
+          "Size": "29.5\"",
+          "Colour": "natrual",
+          "Material": "coir",
+          "Weight": "1600 g",
+          "Category": "",
+          "Notes": "Non-slip PVC backing. For covered outdoor areas.",
+          "Image": ""
+        },
+        {
+          "SKU": "DR-MT-75-BLK",
+          "Product Name": "Coir Door Mat",
+          "Brand": "Flechtwerk",
+          "Description": "Natural coir door mat with non-slip backing.",
+          "Price": "28.99",
+          "Currency": "EUR",
+          "Size": "29.5\"",
+          "Colour": "black",
+          "Material": "coir",
+          "Weight": "1600 g",
+          "Category": "",
+          "Notes": "Non-slip PVC backing. For covered outdoor areas.",
+          "Image": ""
+        }
+      ]
+    }
+  ]
+}
