@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
-import { AlertTriangle, CheckCircle2, FileSpreadsheet, ImageIcon, Loader2, RotateCcw, UploadCloud, X } from "lucide-react";
+import { AlertTriangle, CheckCircle2, FileSpreadsheet, ImageIcon, Loader2, RotateCcw, Trash2, UploadCloud, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
@@ -229,6 +229,14 @@ function ImportCard({ imp }: { imp: ImportItem }) {
     onSuccess: () => void qc.invalidateQueries({ queryKey: ["imports"] }),
   });
 
+  const remove = useMutation({
+    mutationFn: () => api<{ deleted: boolean; deletedProducts: number }>(`/api/imports/${imp.id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["imports"] });
+      void qc.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
   const seg = useMemo(
     () =>
       c.total
@@ -251,7 +259,21 @@ function ImportCard({ imp }: { imp: ImportItem }) {
         {imp.stage && active && <span className="text-xs text-muted">stage: {imp.stage}</span>}
         {imp.source === "api" && <span className="chip bg-surface-2 text-muted">API</span>}
         <span className="ml-auto text-xs text-muted">{new Date(imp.createdAt).toLocaleString()}</span>
+        {!active && (
+          <button
+            className="rounded-md p-1.5 text-muted hover:bg-bad/10 hover:text-bad disabled:opacity-50"
+            aria-label={`Delete import ${imp.filename}`}
+            title="Delete this run"
+            disabled={remove.isPending}
+            onClick={() => {
+              if (window.confirm(`Delete "${imp.filename}"?\n\nThis removes the run, its rows and photos, and the products it created (also from the storefront). Products a later import updated are kept. This cannot be undone.`)) remove.mutate();
+            }}
+          >
+            {remove.isPending ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
+          </button>
+        )}
       </div>
+      {remove.error && <p className="mt-2 text-sm text-bad">{(remove.error as Error).message}</p>}
 
       {imp.status === "paused" && (
         <p className="mt-2 flex items-center gap-1.5 text-sm text-warn">
