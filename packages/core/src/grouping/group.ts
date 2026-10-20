@@ -69,12 +69,19 @@ export function skuBase(row: CleanedRow): string | null {
   return stripped ? parts.join("-") : null;
 }
 
-/** SKU minus a trailing variant index (`-1`, `-12`, `-B`); null when there is no SKU. */
-function skuFamily(sku: string | null): string | null {
+/**
+ * SKU minus trailing variant segments (`-1`, `-16`, `-A`, `-SG`): PLN-1066-16-SG → PLN-1066.
+ * `stripped` counts removed segments; two or more is a clear product-size-colour scheme.
+ */
+export function skuFamily(sku: string | null): { family: string; stripped: number } | null {
   if (!sku) return null;
   const parts = sku.toUpperCase().split(/[-_/. ]+/).filter(Boolean);
-  if (parts.length > 1 && /^(\d{1,2}|[A-Z])$/.test(parts[parts.length - 1] as string)) parts.pop();
-  return parts.join("-");
+  let stripped = 0;
+  while (parts.length > 1 && /^(\d{1,2}|[A-Z]{1,2}|\d{1,4}(?:ML|L|IN|CM|MM|G|KG)|\d{1,3}X\d{1,3}|STD|OS|XXL|XL|XS)$/.test(parts[parts.length - 1] as string)) {
+    parts.pop();
+    stripped++;
+  }
+  return { family: parts.join("-"), stripped };
 }
 
 /** Name minus sizes, colours, numbers and units; used to join split rows of the same product. */
@@ -145,13 +152,16 @@ export function groupRows(rows: CleanedRow[], _opts: { defaultCurrency: string }
       // a row whose full SKU equals another row's base (e.g. parent row "TC-PL") joins too
       link(`sku:${b}`, i);
     }
+    // PLN-1066-16-A and PLN-1066-30-T are one product even when one row's name is in German
+    const fam = skuFamily(r.sku);
+    if (fam && fam.stripped >= 2) link(`base:${fam.family}`, i);
   });
 
   // Phase 2: name joins, unless both sides already carry different SKU families
   // (TP-0001-1/TP-0001-2 share family TP-0001; PL-001 vs PL-002 stay apart).
   const identities = new Map<number, Set<string>>();
   rows.forEach((r, i) => {
-    const ident = bases[i] ?? skuFamily(r.parentSku ?? r.sku);
+    const ident = bases[i] ?? skuFamily(r.parentSku ?? r.sku)?.family;
     if (!ident) return;
     const root = uf.find(i);
     const set = identities.get(root) ?? new Set<string>();

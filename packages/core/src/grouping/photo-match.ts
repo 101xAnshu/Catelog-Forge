@@ -20,6 +20,9 @@ export function isSystemFile(path: string): boolean {
  */
 export function matchPhotos(assets: AssetRef[], groups: ProductGroup[]): PhotoMatch[] {
   const skuIndex: Array<{ key: string; productKey: string }> = [];
+  // "PLN-1066" → products whose variant SKUs start with "PLN-1066-" (photo named after the product, not a variant)
+  const prefixIndex = new Map<string, Set<string>>();
+  const segs = (s: string) => s.toUpperCase().split(/[-_/. ]+/).filter(Boolean);
   const imageIndex = new Map<string, Set<string>>();
   const nameIndex: Array<{ tokens: string[]; productKey: string }> = [];
   for (const g of groups) {
@@ -27,6 +30,16 @@ export function matchPhotos(assets: AssetRef[], groups: ProductGroup[]): PhotoMa
     for (const v of g.variants) if (v.sku) skus.add(norm(v.sku));
     if (g.productKey.startsWith("sku:")) skus.add(norm(g.productKey.slice(4)));
     for (const s of skus) if (s.length >= 3) skuIndex.push({ key: s, productKey: g.productKey });
+    for (const v of g.variants) {
+      if (!v.sku) continue;
+      const p = segs(v.sku);
+      for (let n = 2; n < p.length; n++) {
+        const key = p.slice(0, n).join("-");
+        const set = prefixIndex.get(key) ?? new Set<string>();
+        set.add(g.productKey);
+        prefixIndex.set(key, set);
+      }
+    }
     for (const r of g.rows) {
       if (r.imageRef) {
         for (const ref of r.imageRef.split(/[,;|\s]+/).filter(Boolean)) {
@@ -58,6 +71,13 @@ export function matchPhotos(assets: AssetRef[], groups: ProductGroup[]): PhotoMa
       const best = new Set(skuHits.filter((s) => s.key.length === maxLen).map((s) => s.productKey));
       if (best.size === 1) return { assetId: a.id, productKey: [...best][0] as string, method: "sku" };
       return { assetId: a.id, productKey: null, method: null, reason: `Filename matches several products (${[...best].join(", ")})` };
+    }
+
+    // 1b. filename is a SKU prefix of exactly one product ("PLN-1066.jpg", "PLN-1066-2.jpg")
+    const base = baseName(a.filename);
+    for (const candidate of [segs(base).join("-"), segs(base.replace(/(?:[-_ ]\d{1,2}|\s?\(\d{1,2}\))$/, "")).join("-")]) {
+      const owners = prefixIndex.get(candidate);
+      if (owners?.size === 1) return { assetId: a.id, productKey: [...owners][0] as string, method: "sku" };
     }
 
     // 2. image column
