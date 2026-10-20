@@ -186,7 +186,7 @@ export default function UploadPage() {
         ) : imports.error ? (
           <p className="text-sm text-bad">{(imports.error as Error).message}</p>
         ) : !imports.data?.imports.length ? (
-          <Empty>No imports yet. Try <code>fixtures/small.csv</code> from the repo.</Empty>
+          <Empty>No imports yet. Try <code>small-20.csv</code> + <code>photos.zip</code> from <code>fixtures/</code>.</Empty>
         ) : (
           imports.data.imports.map((imp) => <ImportCard key={imp.id} imp={imp} />)
         )}

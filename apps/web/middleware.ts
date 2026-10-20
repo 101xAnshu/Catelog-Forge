@@ -15,4 +15,6 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"] };
+// API routes authenticate themselves; keeping them out of middleware also avoids Next's 10 MB
+// middleware body cap, which truncated photo ZIP uploads ("expected boundary after body").
+export const config = { matcher: ["/((?!api/|_next/static|_next/image|favicon.ico).*)"] };
