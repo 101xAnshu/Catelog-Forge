@@ -6,7 +6,8 @@ import { refreshCounts, setImportStatus } from "../progress";
 import { checkFinalize } from "./finalize";
 
 /** Products per AI request: small enough that the JSON answer fits comfortably in the output budget. */
-export const BUILD_BATCH = 5;
+/** Products per AI build call. 1 is fastest with highly parallel providers (one call ≈ one product's latency). */
+export const BUILD_BATCH = Math.max(1, Number(process.env.BUILD_BATCH_SIZE ?? 5));
 
 interface ExistingProduct {
   id: string;

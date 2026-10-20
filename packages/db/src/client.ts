@@ -19,7 +19,7 @@ export type DbRole = "web" | "storefront" | "worker" | "script";
 export function createDb(role: DbRole = "script"): DbHandle {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL is not set");
-  const max = { web: 10, storefront: 5, worker: 8, script: 4 }[role];
+  const max = { web: 10, storefront: 5, worker: Number(process.env.DB_POOL_WORKER ?? 8), script: 4 }[role];
   const client = postgres(url, {
     max,
     idle_timeout: 30,

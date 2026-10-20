@@ -17,7 +17,8 @@ const BASE_URL = "https://opencode.ai/inference/go/openai/v1";
 export const OPENCODE_CHAINS: Record<Tier, string[]> = {
   cheap: ["mimo-v2.6-flash", "mimo-v2.5", "minimax-m3.1-flash-free", "longcat-2.5-preview-free"],
   strong: ["mimo-v2.5", "mimo-v2.6-flash", "minimax-m3.1-flash-free", "longcat-2.5-preview-free"],
-  vision: ["qwen3.8-flash", "minimax-m3.1-flash-free", "mimo-v2.6-flash"],
+  // mimo-v2.6-flash reads images too and answers in ~5 s; qwen3.8-flash reasons for ~25 s, so it is the fallback.
+  vision: ["mimo-v2.6-flash", "qwen3.8-flash", "minimax-m3.1-flash-free"],
 };
 
 function chainFor(tier: Tier): string[] {

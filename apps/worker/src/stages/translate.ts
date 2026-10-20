@@ -19,7 +19,7 @@ interface Pending {
 }
 
 const MAX_CHARS_PER_CALL = 2500;
-const MAX_ITEMS_PER_CALL = 15;
+const MAX_ITEMS_PER_CALL = Math.max(1, Number(process.env.TRANSLATE_BATCH_ITEMS ?? 15));
 
 export async function runTranslate(job: Job<TranslateJob>, worker: Worker): Promise<void> {
   try {
@@ -72,20 +72,22 @@ async function translateProducts(job: Job<TranslateJob>, worker: Worker): Promis
     return { productId: r.product_id, storeId, field: r.field_path, locale: r.locale, english: r.value, sourceHash: r.source_hash, masked, tokens };
   });
 
-  for (const locale of ["de", "fr"] as const) {
-    const items = pending.filter((p) => p.locale === locale);
-    for (const batch of chunkByChars(items)) {
+  // Every (locale, batch) call is independent, so they run concurrently: a product's DE and FR finish together.
+  const calls = (["de", "fr"] as const).flatMap((locale) =>
+    chunkByChars(pending.filter((p) => p.locale === locale)).map((batch) => ({ locale, batch })),
+  );
+  await Promise.all(
+    calls.map(async ({ locale, batch }) => {
       const failed = await translateBatch(batch, locale, job, worker);
-      if (failed.length) {
-        // A13: one more try for items whose tokens did not survive, then fall back to English.
-        const stillFailed = await translateBatch(failed, locale, job, worker);
-        for (const f of stillFailed) {
-          await sql`update translations set state = 'missing', error = 'Placeholders, HTML or brand names were not preserved',
-            updated_at = now() where product_id = ${f.productId} and field_path = ${f.field} and locale = ${locale} and origin = 'ai'`;
-        }
+      if (!failed.length) return;
+      // A13: one more try for items whose tokens did not survive, then fall back to English.
+      const stillFailed = await translateBatch(failed, locale, job, worker);
+      for (const f of stillFailed) {
+        await sql`update translations set state = 'missing', error = 'Placeholders, HTML or brand names were not preserved',
+          updated_at = now() where product_id = ${f.productId} and field_path = ${f.field} and locale = ${locale} and origin = 'ai'`;
       }
-    }
-  }
+    }),
+  );
   await resumeImports(storeId);
   for (const id of productIds) await publishProduct(db, id);
   if (job.data.importId) await checkFinalize(job.data.importId);
