@@ -13,10 +13,16 @@ The same Docker image runs both services; `ROLE` picks which one.
 ```
 DATABASE_URL=postgres://...            # Supabase session pooler URL
 REDIS_URL=redis://...                  # Railway Redis internal URL
-GROQ_API_KEY=gsk_...                   # leave empty for demo mode (fake provider)
+OPENCODE_API_KEY=<your-opencode-go-key> # default AI provider; leave all AI keys empty for demo mode
+GROQ_API_KEY=                          # optional fallback provider (used only without an OpenCode key)
+AI_PROVIDER=                           # optional override: opencode | groq | fake
 STORAGE_DIR=/data/storage              # see "File storage" below
 APP_URL=https://<your-web-domain>
+WORKER_BUILD_CONCURRENCY=8             # worker only; OpenCode Go has no per-minute limit
+WORKER_TRANSLATE_CONCURRENCY=8         # worker only
 ```
+
+Optional per-tier model chains (`OPENCODE_MODELS_CHEAP`, `OPENCODE_MODELS_STRONG`, `OPENCODE_MODELS_VISION`) are listed in `.env.example`. OpenCode Go requires an `x-opencode-session` header on every request; the provider sends it automatically.
 
 ## File storage
 Uploads are written by `web` and read by `worker`, so both need the same storage:

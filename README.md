@@ -42,13 +42,13 @@ flowchart LR
     SF[Storefront pages<br/>own DB pool · cache]
   end
   subgraph Worker["apps/worker (Bun, ×N replicas)"]
-    P[parse] --> C[clean] --> G[group + photo match] --> B[AI build<br/>batches of 10] --> T[translate<br/>DE · FR] --> F[finalize<br/>counts invariant]
-    R[reconciler<br/>on boot]
+    P[parse] --> C[clean] --> G[group + photo match] --> B[AI build<br/>5 products / call] --> T[translate<br/>DE · FR] --> F[finalize<br/>counts invariant]
+    R[reconciler<br/>on boot + every 30 s]
     W[webhook outbox]
   end
   PG[(Postgres<br/>source of truth)]
   RD[(Redis + BullMQ<br/>schedules work)]
-  AI[[Groq<br/>gpt-oss-20b · gpt-oss-120b · qwen vision]]
+  AI[[OpenCode Go<br/>mimo-v2.6-flash · mimo-v2.5 · qwen3.8-flash vision<br/>→ free-model fallback]]
 
   D --> API --> PG
   API -->|enqueue, deterministic job ids| RD
@@ -75,7 +75,7 @@ apps/worker/       BullMQ workers: parse → clean → group → build → trans
 packages/core/     Pure domain logic with no I/O: cleaning, grouping, photo matching, prompts, AI guards, masking, exports
 packages/db/       Drizzle schema, SQL migrations, store-scoped pools
 packages/queue/    Queue names, job contracts, enqueue helpers (deterministic job ids)
-packages/ai/       Provider interface, Groq provider, deterministic fake provider, cost table
+packages/ai/       Provider interface, OpenCode Go provider (default), Groq provider, deterministic fake provider, cost table
 fixtures/          Generated messy sheets + photos (bun run fixtures)
 eval/              Labelled test set + evaluation runner
 load/              k6 + autocannon storefront load tests
@@ -88,16 +88,30 @@ Requirements: [Bun](https://bun.sh) ≥ 1.3 and Docker.
 ```bash
 docker compose up -d                 # Postgres 16 (:5433) + Redis 7 with AOF (:6380)
 bun install
-cp .env.example .env                 # add GROQ_API_KEY, or leave it empty for demo mode
+cp .env.example .env                 # add OPENCODE_API_KEY (or GROQ_API_KEY), or leave both empty for demo mode
 bun run db:migrate && bun run db:seed
 bun run fixtures                     # generates fixtures/*.csv|xlsx|zip
 bun run dev                          # web on http://localhost:3000
 bun run worker                       # in a second terminal (run it twice for 2 workers)
 ```
 
-Log in at `http://localhost:3000/login` with **`demo@catalogforge.dev` / `demo1234`**. Upload `fixtures/small-20.csv` + `fixtures/photos.zip`, then open the storefront at `http://localhost:3000/store/de`.
+Log in at `http://localhost:3000/login` with **`demo@catalogforge.dev` / `demo1234`**. Upload `fixtures/small-20.csv` **together with** `fixtures/photos.zip` (photos only match products from the same upload), approve a few products, then open the storefront at `http://localhost:3000/store/de`.
 
-**Demo mode:** with no `GROQ_API_KEY` (or `AI_PROVIDER=fake`), the app uses a deterministic fake provider and shows a banner. It can also inject failures (`FAKE_AI_FAILURES=rate_limit:0.1,invalid_json:0.1,timeout:0.05`) to demonstrate retries and rate-limit pauses.
+**AI keys (`.env`):**
+
+| Variable | Purpose |
+|---|---|
+| `OPENCODE_API_KEY` | OpenCode Go subscription key. Used by default when set. |
+| `GROQ_API_KEY` | Optional. Used when no OpenCode key is set (free tier is heavily rate limited, see below). |
+| `AI_PROVIDER` | Optional override: `opencode`, `groq` or `fake`. |
+| `OPENCODE_MODELS_CHEAP` / `_STRONG` / `_VISION` | Optional comma-separated model chains, e.g. `deepseek-v4.1-flash,mimo-v2.6-flash`. |
+| `WORKER_BUILD_CONCURRENCY` / `WORKER_TRANSLATE_CONCURRENCY` | Parallel AI calls per worker (defaults 4 / 2; we run 8 / 8 on OpenCode Go, which has no per-minute limit). |
+
+Provider selection: `AI_PROVIDER` if set, otherwise **OpenCode Go → Groq → fake**.
+
+**Demo mode:** with no AI key (or `AI_PROVIDER=fake`), the app uses a deterministic fake provider and shows a banner. It can also inject failures (`FAKE_AI_FAILURES=rate_limit:0.1,invalid_json:0.1,timeout:0.05`) to demonstrate retries and rate-limit pauses. Use it for the 10k-row scale demo: it finishes in about a minute.
+
+**Sample data:** `fixtures/` has `small-20.csv`, `messy-500.xlsx` (German headers, header on line 4), `bulk-10000.csv` and `photos.zip` (synthetic coloured tiles named by SKU, plus orphans, a corrupt file and `__MACOSX` junk). A real supplier sheet we tested against had **11,576 rows**, which is over the 10,000-row limit and is rejected by design with `TOO_MANY_ROWS`; slices of it (`real-sample-100.csv`, `real-sample-1000.csv` with matching photo zips) are what we used for real-model runs.
 
 **Public API:** the demo key is `cf_demo_0123456789abcdef0123456789abcdef` (see [Public API](#public-api)).
 
@@ -109,33 +123,38 @@ Log in at `http://localhost:3000/login` with **`demo@catalogforge.dev` / `demo12
 | Web | Next.js 15 (App Router), React 19, Tailwind v4, TanStack Table/Query | One app for dashboard, storefront and API. Server components keep storefront pages lean. |
 | DB | PostgreSQL 16 + Drizzle ORM | Typed schema. Real unique constraints do the duplicate protection. `ON CONFLICT` upserts make jobs idempotent. |
 | Queue | Redis (AOF) + BullMQ | Durable jobs, exponential backoff, stalled-job recovery, global rate limiting. |
-| AI | **Groq** (OpenAI-compatible) | Very low latency and cheap open-weight models. Tiers: `openai/gpt-oss-20b` for clean rows, `openai/gpt-oss-120b` for messy ones, `qwen/qwen3.8-27b` for vision. JSON mode. |
+| AI | **OpenCode Go** (OpenAI-compatible, default) · Groq (fallback) | OpenCode Go limits are per model and in dollars, not tokens/minute, so spreading work across models removes rate-limit pauses. Tiers: `mimo-v2.6-flash` (clean rows), `mimo-v2.5` (messy rows), `qwen3.8-flash` (vision), each falling back to free models. JSON mode. |
 | Parsing | SheetJS, papaparse, yauzl (streaming zip), sharp | Streaming where it matters. sharp validates and thumbnails photos. |
-| Auth | Built-in: email + password (Bun.password/argon2), hashed session tokens, store membership | Keeps the app runnable with nothing but docker-compose. Every query is scoped by `store_id`. |
+| Auth | Built-in: email + password (scrypt), hashed session tokens, store membership | Keeps the app runnable with nothing but docker-compose. Every query is scoped by `store_id`. |
 
 Decisions worth calling out:
 - **The AI never produces numbers.** Prices, currencies, weights and SKUs come only from deterministic cleaning; the AI writes text. A model cannot corrupt money.
 - **Claims need receipts.** The model must return each claim with a verbatim quote and its row/column. The server verifies the quote against that cell, and a quote it can't find drops the claim.
 - **The storefront reads a snapshot.** The `storefront_products` table is a denormalised, per-locale snapshot written only when a product is approved or a translation changes. Storefront pages use their own small connection pool with a 2 s statement timeout.
-- **Groq Batch API:** it returns `403` on the free tier, so batch mode is behind a setting (`useBatch`). Without it, we batch at the request level instead (10 products per request).
+- **Why OpenCode Go instead of Groq.** We started on Groq's free tier and measured its limits: about **8,000 tokens/minute** and **~1,000 requests/day per model**, and its Batch API returns `403`. At ~2,075 tokens per product, a 10k-row sheet (~3,400 products) needs ~7M tokens: 14+ hours of pauses, and the daily cap stops it first. OpenCode Go (`https://opencode.ai/inference/go/openai/v1`) bills against per-model dollar allowances with no documented per-minute limit, so we moved there and kept Groq as a fallback provider.
+- **OpenCode Go specifics** (`packages/ai/src/opencode.ts`): every request carries a stable `x-opencode-session` header (required). Each tier is a **chain of models**; a model that hits its quota or a rate limit is cooled down and the next model takes the call, ending with the free models `minimax-m3.1-flash-free` and `longcat-2.5-preview-free`. The queue only pauses when **every** model in a chain is limited at once. A model the workspace can't use (e.g. `deepseek-v4.1-flash` needs the workspace's **Global** region in Privacy settings) is skipped for an hour. Override chains with `OPENCODE_MODELS_<TIER>`.
+- **No batch API.** Neither provider offers a usable batch API for this account (Groq: `403`; OpenCode Go: none documented), so `useBatch` stays a setting and we batch at the request level instead: 5 products per build call, up to 15 fields per translation call.
 
 ## Scale strategy
 
 | Concern | How it works |
 |---|---|
 | **Upload returns immediately** | The API streams files to storage, hashes them, inserts the import row and enqueues `parse`. It responds `202` with the import id. All work happens in workers. |
-| **Batches, not per-field calls** | One AI request builds ~10 products (all fields at once). One translation request handles many fields for one locale. |
+| **Batches, not per-field calls** | One AI request builds 5 products (all fields at once). One translation request handles up to 15 fields for one locale. |
 | **Durable queue** | BullMQ on Redis with AOF persistence. Stages: `parse → clean → group → build×N → translate×N → finalize`. |
 | **No duplicates (re-upload)** | `UNIQUE(store_id, file_sha256)` on imports: the same file returns the same import. |
 | **No duplicates (products)** | `UNIQUE(store_id, product_key)`, `UNIQUE(store_id, sku)`, `UNIQUE(product_id, variant_key)` and `UNIQUE(import_id, row_number)`. Every write is an `INSERT … ON CONFLICT` upsert. |
 | **Changed rows update products** | A modified file regroups to the same `product_key` and updates in place. A product whose `input_hash` is unchanged **skips the AI entirely**. |
 | **Deterministic job ids** | e.g. `<importId>:group`, `build:<importId>:<batch>`. Enqueueing twice (double-click, retry, reconciler) is a no-op. |
-| **Restart mid-import** | Workers trap `SIGTERM`. Jobs from a crashed worker are recovered by BullMQ stalled-job detection. On boot, a **reconciler** reads non-terminal imports from Postgres and re-enqueues whatever is unfinished, even if Redis was wiped. Upserts make replays harmless. |
+| **Restart mid-import** | Workers trap `SIGTERM`. Jobs from a crashed worker are recovered by BullMQ stalled-job detection. On boot and every 30 s, a **reconciler** reads non-terminal imports from Postgres and re-enqueues whatever is unfinished, even if Redis was wiped. Upserts make replays harmless. A finished (completed/failed) job that still holds the same deterministic id is cleared first, so a deliberate re-queue is never silently swallowed (a bug we hit in testing). Stale queue-wide rate limits from a previous worker session are cleared on boot. |
 | **Every row ends somewhere** | Rows finish as `done`, `needs_review` or `failed` (with a reason). `finalize` asserts `done + needs_review + failed = total_rows` before completing the import. |
 | **Retries** | Exponential backoff with jitter on 5xx, timeouts (60 s) and invalid JSON. Invalid JSON gets one "repair" re-ask with the validation error first. |
-| **Rate limits** | A 429 reads `retry-after` and pauses the queue globally (`worker.rateLimit`); the job is *not* counted as a failed attempt. The import shows **"Paused — resuming in X min"** and resumes automatically. |
+| **Rate limits** | On OpenCode Go a limited model is skipped in favour of the next model in its chain. Only when a whole chain is limited does a 429 pause the queue globally (`worker.rateLimit`, honouring `retry-after`); the job is *not* counted as a failed attempt. The import shows **"Paused — resuming in X min"** and resumes automatically. |
 | **Provider down** | A circuit breaker opens after consecutive failures and pauses work instead of burning every job's attempts. |
 | **Two imports at once** | Shared worker pool with per-stage concurrency. Products from both imports upsert on the same unique keys. |
+| **Cancel** | `POST /api/imports/:id/cancel` marks unfinished rows `failed` ("Import cancelled") so the counts still add up, fails products the AI hadn't built yet, removes queued jobs, and workers skip jobs already picked up. The reconciler and finalize treat `cancelled` as terminal. |
+| **Delete a past run** | `DELETE /api/imports/:id` (finished, failed or cancelled runs only) undoes the run: rows, photos, uploaded files and the products it last touched (plus their storefront entries). Products a later import updated, and AI cost history, are kept. |
+| **Re-upload after cancel/fail** | The old import gives up its file hash (renamed `…:superseded:<id>`, history kept), so the same file can run again. Completed or running imports still dedupe. |
 | **Storefront stays fast** | Snapshot table, its own DB pool, `unstable_cache` with per-store tags (invalidated on publish), and no AI or translation at request time. |
 
 ## Accuracy strategy
@@ -148,7 +167,9 @@ Decisions worth calling out:
    - Header detection with EN/DE/FR synonyms, even when the header isn't on line 1.
    - Language detection.
    - Every correction is recorded as an issue the reviewer can see.
-2. **Grouping:** rows are grouped by base SKU, parent SKU or brand + normalised name, whatever the row order. Exact duplicates are merged; conflicting duplicates are flagged, not guessed.
+2. **Grouping:** rows are grouped by base SKU, parent SKU, **SKU family** (`PLN-1066-16-A` and `PLN-1066-30-T` → `PLN-1066`, so an English and a German row of the same product join) or brand + normalised name, whatever the row order. Bare model numbers keep products apart ("Planter 1" ≠ "Planter 2"). Exact duplicates are merged; conflicting duplicates are flagged, not guessed.
+   - Photos match by SKU in the filename, by **SKU prefix** (`PLN-1066.jpg`, `PLN-1066-2.jpg` → product `PLN-1066`), or by the sheet's image column. Ambiguous or unmatched photos are listed as orphans, never guessed.
+   - On a real 11.5k-row supplier sheet with 1,437 photos, these fixes took photo matches from **1,043 → 1,409** (the remaining 28 are genuine orphans such as `MISC-*`/`OLD-*`) and merged split variants from **5,051 → 3,547** products.
 3. **Prompting:** the source rows are passed as data with row numbers and column names, with these rules:
    - copy hedges ("frost-resistant, not frost-proof")
    - never upgrade a claim
@@ -158,7 +179,7 @@ Decisions worth calling out:
 4. **Deterministic guards** (`packages/core/src/ai/guards.ts`):
    - Claim quotes are verified against the cited cell.
    - A risky-term lexicon (frost-proof, waterproof, organic, handmade, dishwasher-safe, BPA-free, …) is checked against all generated text, with negation awareness.
-   - Category must come from the taxonomy.
+   - Category must come from the taxonomy. Known supplier synonyms (`Home Decor > Cushions`, `Storage > Baskets`, `Kitchen & Dining > Boards`, `Lighting > Table Lamps`, …) map to their node **without** a review flag; real misses map to the nearest node (or `Uncategorized`) and go to review. On a real-data run this cut category review flags from **15 → 0** and needs-review products from **16 → 10** of 22 (the rest are genuine: missing prices, conflicting prices, mixed-language names).
    - SKU, price and weight are validated.
    - Unique handles.
 5. **Gating:** a product goes to **Needs review** with a human-readable reason if any of these hold:
@@ -175,17 +196,20 @@ Decisions worth calling out:
   - conflicts
   - description length
 
-  Clean groups go to `gpt-oss-20b`, messy ones to `gpt-oss-120b`. The vision model is used only when photos exist and the text can't describe the product.
+  Clean groups go to the cheap tier (`mimo-v2.6-flash`), messy ones to the strong tier (`mimo-v2.5`). The vision tier (`qwen3.8-flash`) is used only when photos exist and the text can't describe the product.
+- **Spread across quotas:** OpenCode Go limits are per model, so tiers use different models and each chain ends in **free models** (`minimax-m3.1-flash-free`, `longcat-2.5-preview-free`) that keep working after a paid model's allowance runs out.
 - **Skip unchanged:** re-imports skip products whose input hash didn't change ($0).
-- **Batching:** 10 products per request amortises the system prompt; translations are batched per locale.
-- **Batch API:** supported behind `useBatch` where the provider allows it (Groq free tier: not available).
+- **Batching:** 5 products per build request amortises the system prompt; up to 15 fields per translation request, per locale.
+- **Batch API:** not available on either provider for this account (Groq free tier returns `403`; OpenCode Go documents none). `useBatch` is kept as a setting for providers that offer one.
+- **Measured token usage** on real models: ≈ **1,275 input + 800 output tokens per product** (build ≈ 600 / 245, DE + FR translation ≈ 675 / 555).
+- **Cost note:** OpenCode Go bills against a monthly allowance and doesn't publish per-token prices for these models, so `packages/ai/src/cost.ts` uses estimated prices (free models at $0). Cost figures for OpenCode Go runs are therefore estimates; Groq figures use its list prices.
 - **Tracking:** every AI call is stored in `ai_calls` with model, tier, tokens, latency, outcome, cost, and a **baseline cost** (the same tokens on the strong model). The Metrics tab shows cost per product, per model and per import, plus **money saved** = baseline − actual.
 
 ## Features
 
 Core:
 - Drag-and-drop upload of CSV/XLSX + photos (files or ZIP), with type/size limits and clear errors.
-- Live per-import progress, per-row status, and retry for failed rows.
+- Live per-import progress, per-row status, retry for failed rows, **cancel** for running imports and a **delete** (trash) icon for past runs.
 - Data cleaning, grouping into variants, duplicate detection, photo matching (orphans listed), HTML sanitising.
 - AI builder with structured JSON, per-field confidence, claims with sources, and Needs-review reasons.
 - DE/FR translation. Brands, `{{placeholders}}`, HTML, numbers and units are protected by token masking and verified on the way back. Only changed fields are re-translated. Manual fixes always win and are marked **Out of date** when the English changes.
@@ -254,8 +278,11 @@ The eval harness found one real gap during development: a claim like "frost-proo
 
 | Metric | Value | How measured |
 |---|---|---|
-| Throughput (fake provider) | <!-- MEASURED --> rows/min | `bulk-10000.csv`, 2 workers, local |
-| Throughput (Groq free tier) | <!-- MEASURED --> rows/min | `messy-500.xlsx`; bound by the 8k tokens/min free-tier limit |
+| Throughput (fake provider) | **10,000 rows in 69 s ≈ 8,660 rows/min** (3,368 products, 0 duplicate SKUs/handles) | `bulk-10000.csv`, local, `AI_PROVIDER=fake` |
+| Real AI run (OpenCode Go) | **103 rows / 22 products: builds ≈ 50 s, translations ≈ 3 min, 0 rate-limit pauses, 304/304 translations fresh** | `real-sample-100.csv` + photos, concurrency 8 / 8 |
+| Throughput (OpenCode Go, larger run) | <!-- MEASURED --> rows/min | `real-sample-1000.csv` |
+| Groq free tier | 20 rows took 384 s, almost all of it rate-limit pauses | `small-20.csv`; 8k tokens/min |
+| Tokens per product (real models) | ≈ 1,275 input + 800 output | `ai_calls` |
 | Storefront p95, idle | <!-- MEASURED --> ms | autocannon, 100 connections, product page |
 | Storefront p95, during 10k import | <!-- MEASURED --> ms | same, while the import runs |
 | Cost per 1,000 products | $<!-- MEASURED --> | `ai_calls` sum ÷ products |
@@ -263,9 +290,9 @@ The eval harness found one real gap during development: a claim like "frost-proo
 | Eval: category / material / hallucinated claims | <!-- MEASURED --> | `bun run eval` |
 
 **What breaks first at 1,000,000 products in 8 languages, and how would you fix it?**
-1. **Translation volume.** 1M products × ~6 fields × 8 locales ≈ 48M strings.
-   - Synchronous calls and rate limits break first.
-   - Fix: provider batch APIs (≈50% cheaper, no rate-limit pressure).
+1. **Translation volume and provider quotas.** 1M products × ~6 fields × 8 locales ≈ 48M strings, roughly 4–5 billion tokens with our measured ~1,275 in / 800 out per product per 2 locales.
+   - Per-model provider allowances break first (we already hit Groq's free-tier cap at 10k rows; OpenCode Go's per-model monthly dollar caps would follow at this scale).
+   - Fix: a paid provider tier with a batch API (≈50% cheaper, no rate-limit pressure), keeping the per-tier model chains so one exhausted model never stalls the pipeline.
    - Fix: translation memory keyed by `hash(source text, locale)`. Supplier catalogs repeat a lot.
    - Fix: keep per-field hashing so edits only re-translate what changed.
 2. **The `storefront_products` snapshot** grows to 9M rows (1M × 9 locales).
@@ -283,16 +310,29 @@ The eval harness found one real gap during development: a claim like "frost-proo
 **What did you learn?**
 Reliability work is mostly designing what's stored, not adding retries. Once every unit of work has a durable status and a natural key, retries, restarts and duplicates stop being special cases. On accuracy: a small labelled set paid for itself immediately. It found a negation bug that would have shipped "frost-proof" to a storefront.
 
+Testing against a real supplier sheet taught the rest: the synthetic fixtures passed, but real SKU schemes (`PLN-1066-16-A`), photos named after the product rather than a variant, and supplier category names all needed changes that only showed up on real data. A provider's free-tier limits also shape the architecture: per-model fallback chains turned constant "Paused" banners into zero pauses.
+
 **How did you use AI while building this?**
 AI coding agents as pair programmers:
 - The plan and EDGE-CASES.md first.
 - Then parallel agents on separate packages (core logic, worker pipeline, dashboard, storefront/eval/docs) against shared contracts: DB schema, queue job types, core types.
+- Dry runs of the cleaning/grouping code against the real supplier sheet (no AI calls) to find grouping and photo-matching gaps before spending tokens.
 
 Every module was reviewed, typechecked and tested. The eval harness and fixtures were also used to check the AI-written code's own claims.
 
 ## Screenshots
 
-<!-- Add screenshots / GIFs: upload queue with live progress, paused-for-rate-limit banner, review side-by-side, storefront DE/FR, metrics dashboard. -->
+<!-- Add screenshots / GIFs here. -->
+
+Screens to capture:
+1. **Upload tab** with a run in progress: live stage bar, done / needs-review / failed / pending counts, and the Cancel button.
+2. **"Paused — resuming in X min"** banner (run with `AI_PROVIDER=fake FAKE_AI_FAILURES=rate_limit:0.3` to trigger it on demand).
+3. **Products tab**: photo thumbnails, SKU · variants, price-from, colour-coded confidence, review reasons.
+4. **Review page** side by side: source rows with cited cells highlighted + photos ↔ AI result, claims with sources (a struck-through rejected claim), EN/DE/FR tabs with an Out-of-date badge.
+5. **Storefront** product and collection pages in DE and FR (and an English fallback country), plus a phone-width view.
+6. **Metrics tab**: rates, model usage, cost over time, speed, translation coverage / out-of-date count.
+7. **Restart demo**: the worker killed mid-import and the run completing with counts adding up (GIF).
+8. **Settings**: webhook URL, API keys, country → language table.
 
 | Upload & progress | Review | Storefront (DE) | Metrics |
 |---|---|---|---|
