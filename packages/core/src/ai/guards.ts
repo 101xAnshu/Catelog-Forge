@@ -3,7 +3,7 @@ import type { AiProduct, ProductOutput } from "./schema";
 import { editDistance } from "../cleaning/color";
 import { htmlToText, sanitizeDescription } from "../cleaning/html";
 import { claimSupportedByQuote, phraseStatus, quoteMatches, RISKY_CLAIM_TERMS } from "./claims";
-import { CATEGORY_TAXONOMY } from "./taxonomy";
+import { CATEGORY_TAXONOMY, categoryAlias } from "./taxonomy";
 
 export const DEFAULT_REVIEW_THRESHOLD = 70;
 
@@ -39,6 +39,9 @@ export function nearestCategory(category: string): string {
   if (byLeaf) return byLeaf;
   const contains = CATEGORY_TAXONOMY.find((c) => c.toLowerCase().includes(leaf) || leaf.includes(c.toLowerCase().split(">").pop()?.trim() ?? "@@"));
   if (contains) return contains;
+  // a typo in the last segment ("Plantrs") still identifies the node
+  const leafTypo = CATEGORY_TAXONOMY.filter((c) => editDistance(leaf, c.toLowerCase().split(">").pop()?.trim() ?? "") <= 2);
+  if (leaf.length >= 5 && leafTypo.length === 1) return leafTypo[0] as string;
   let best = { c: "Uncategorized", d: Infinity };
   for (const c of CATEGORY_TAXONOMY) {
     const d = editDistance(lc, c.toLowerCase());
@@ -139,6 +142,9 @@ export function applyGuards(
 
   // 3. category must be in taxonomy
   let category = ai.category.trim();
+  // A known synonym ("Home Decor > Cushions") is the same category, not a guess: map it without review.
+  const alias = CATEGORY_TAXONOMY.includes(category) ? null : categoryAlias(category);
+  if (alias) category = alias;
   if (!CATEGORY_TAXONOMY.includes(category)) {
     const mapped = nearestCategory(category);
     reasons.push(`Category "${category}" is not in the taxonomy; mapped to "${mapped}"`);

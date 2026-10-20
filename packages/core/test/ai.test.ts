@@ -38,6 +38,19 @@ describe("applyGuards", () => {
   test("negated claim rejected", () => {
     expect(r.claims.find((c) => c.text === "frost-proof")?.rejectedReason).toBe("Source negates this claim");
   });
+  test("supplier category synonyms map to the taxonomy without review", () => {
+    for (const [supplier, expected] of [
+      ["Home Decor > Cushions", "Home & Garden > Decor > Cushions & Throws"],
+      ["Kitchen & Dining > Boards", "Home & Garden > Kitchen & Dining > Cutting & Serving Boards"],
+      ["Storage > Baskets", "Home & Garden > Decor > Baskets & Storage"],
+      ["Lighting > Table Lamps", "Home & Garden > Lighting > Table Lamps"],
+      ["Furniture > Chairs", "Home & Garden > Furniture > Chairs"],
+    ] as const) {
+      const g = applyGuards(group, { ...ai, category: supplier, claims: [], tags: [], attributes: {} }, { handle: "x" });
+      expect(g.output.category).toBe(expected);
+      expect(g.reviewReasons.some((r) => r.includes("not in the taxonomy"))).toBe(false);
+    }
+  });
   test("negated claim rejected when the quote omits the negation", () => {
     const narrow = applyGuards(group, {
       ...ai,
@@ -63,7 +76,7 @@ describe("applyGuards", () => {
     expect(r.minConfidence).toBe(64);
   });
   test("unknown category mapped and capped", () => {
-    const r2 = applyGuards(group, { ...ai, category: "Garden > Planters", claims: [], tags: [], attributes: {} }, { handle: "x" });
+    const r2 = applyGuards(group, { ...ai, category: "Garden > Plantrs", claims: [], tags: [], attributes: {} }, { handle: "x" });
     expect(r2.output.category).toBe("Home & Garden > Planters");
     expect(r2.output.confidence.category).toBe(50);
   });
