@@ -30,5 +30,6 @@ The full 11,576-row export is not tracked (supplier data); these slices are what
 ## Photo matching notes
 
 - Photos are named by base SKU — `CHR-1071.jpg` matches every variant `CHR-1071-*`; a trailing `-2` is a second photo of the same product. Photos can also match through the sheet's `Image File` column.
+- The folder is real but repetitive: 1,437 filenames map to **93 unique images** (the supplier reused stock photos across SKUs). Every filename is still an asset and matches its own row; storage keeps one copy per image.
 - `small-20` and `messy-500` do not contain every product the photo folder covers, so their imports list the remaining photos as **orphan photos** with a reason. `bulk-10000` includes every photo-matched product: 1,409 of 1,437 photos attach, and only the 25 junk files plus 3 strays are orphaned.
 - Ambiguous or unmatched photos are never attached by guesswork; they are reported in the import.

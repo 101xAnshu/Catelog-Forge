@@ -173,7 +173,9 @@ export const assets = pgTable(
     createdAt: createdAt(),
   },
   (t) => [
-    uniqueIndex("assets_import_sha_uq").on(t.importId, t.sha256),
+    // One asset per uploaded filename. Bytes are content-addressed in storage, so the same photo
+    // reused by several SKUs is stored once but still matches every row that names it (EDGE M34).
+    uniqueIndex("assets_import_filename_uq").on(t.importId, t.filename),
     index("assets_product_idx").on(t.productId),
   ],
 );

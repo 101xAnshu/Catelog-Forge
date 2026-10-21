@@ -201,5 +201,5 @@ async function storePhoto(importId: string, storeId: string, file: PhotoFile): P
   await sql`
     insert into assets (store_id, import_id, filename, sha256, storage_key, thumb_key, width, height, status, reason)
     values (${storeId}, ${importId}, ${file.name}, ${sha}, ${storageKey}, ${thumbKey}, ${width}, ${height}, ${status}, ${reason})
-    on conflict (import_id, sha256) do nothing`;
+    on conflict (import_id, filename) do nothing`;
 }
