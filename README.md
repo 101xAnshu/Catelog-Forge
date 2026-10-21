@@ -6,9 +6,10 @@ CatalogForge turns a merchant's messy supplier spreadsheet and photo folder into
 - runs in the background,
 - survives AI failures and server restarts,
 - never creates duplicates,
-- never slows the storefront down.
+- never takes the storefront down: reads come from a denormalized snapshot on their own pool, so an import competes for CPU but never for locks, AI capacity or the read path.
 
 - **Edge cases first:** [`EDGE-CASES.md`](EDGE-CASES.md), the first commit in the history.
+- **Live demo:** [`https://15-135-152-250.sslip.io`](https://15-135-152-250.sslip.io). The demo is private: the proxy asks for HTTP basic auth (reviewer credentials are shared with the submission, not committed here). Then log in with the prefilled demo account **`demo@catalogforge.dev` / `demo1234`**, upload `fixtures/small-20.csv` + `fixtures/photos.zip`, or call the [public API](#public-api) with the demo key. Hosted on a 2 GB AWS Lightsail instance — see [`deploy/aws/README.md`](deploy/aws/README.md) for why (Postgres + Redis + a long-running worker don't fit serverless free tiers).
 - **Deploy guide:** [`docs/DEPLOY.md`](docs/DEPLOY.md). One Docker image (migrations, demo seed, worker and web), so you only set `DATABASE_URL`, `REDIS_URL`, `OPENCODE_API_KEY` and `APP_URL`. Railway: `railway.json`. Any VPS: `docker compose -f docker-compose.prod.yml up -d`.
 - **Sample data:** [`fixtures/`](fixtures/README.md)
 
@@ -111,7 +112,7 @@ Provider selection: `AI_PROVIDER` if set, otherwise **OpenCode Go → Groq → f
 
 **Demo mode:** with no AI key (or `AI_PROVIDER=fake`), the app uses a deterministic fake provider and shows a banner. It can also inject failures (`FAKE_AI_FAILURES=rate_limit:0.1,invalid_json:0.1,timeout:0.05`) to demonstrate retries and rate-limit pauses. Use it for the 10k-row scale demo: it finishes in about a minute.
 
-**Sample data:** `fixtures/` has `small-20.csv`, `messy-500.xlsx` (German headers, header on line 4), `bulk-10000.csv` and `photos.zip` (synthetic coloured tiles named by SKU, plus orphans, a corrupt file and `__MACOSX` junk). A real supplier sheet we tested against had **11,576 rows**, which is over the 10,000-row limit and is rejected by design with `TOO_MANY_ROWS`; slices of it (`real-sample-100.csv`, `real-sample-1000.csv` with matching photo zips) are what we used for real-model runs.
+**Sample data:** `fixtures/` has `small-20.csv`, `messy-500.xlsx` (German headers, header on line 4), `bulk-10000.csv` and `photos.zip` (synthetic coloured tiles named by SKU, plus orphans, a corrupt file and `__MACOSX` junk). A real supplier sheet we tested against during development had **11,576 rows** — over the 10,000-row limit, rejected by design with `TOO_MANY_ROWS`. It is not included (supplier data), so every measured run quoted in this README uses the tracked fixtures above and can be reproduced.
 
 **Public API:** the demo key is `cf_demo_0123456789abcdef0123456789abcdef` (see [Public API](#public-api)).
 
@@ -201,7 +202,7 @@ Decisions worth calling out:
 - **Skip unchanged:** re-imports skip products whose input hash didn't change ($0).
 - **Batching:** 5 products per build request amortises the system prompt; up to 15 fields per translation request, per locale.
 - **Batch API:** not available on either provider for this account (Groq free tier returns `403`; OpenCode Go documents none). `useBatch` is kept as a setting for providers that offer one.
-- **Measured token usage** on real models: ≈ **1,275 input + 800 output tokens per product** (build ≈ 600 / 245, DE + FR translation ≈ 675 / 555).
+- **Measured token usage** on real models: ≈ **1,275 input + 800 output tokens per product** with 5-product build batches (build ≈ 600 / 245, DE + FR translation ≈ 675 / 555). On the live 2 GB host builds run one product per call, which measures ≈ **2,820 input + 2,105 output per product** — build batching is the single biggest input-token lever.
 - **Cost note:** OpenCode Go bills against a monthly allowance and doesn't publish per-token prices for these models, so `packages/ai/src/cost.ts` uses estimated prices (free models at $0). Cost figures for OpenCode Go runs are therefore estimates; Groq figures use its list prices.
 - **Tracking:** every AI call is stored in `ai_calls` with model, tier, tokens, latency, outcome, cost, and a **baseline cost** (the same tokens on the strong model). The Metrics tab shows cost per product, per model and per import, plus **money saved** = baseline − actual.
 
@@ -254,6 +255,8 @@ k6 run -e BASE_URL=http://localhost:3000 -e HANDLE=<handle> load/storefront.js
 load/autocannon.sh http://localhost:3000 <handle>                # if k6 isn't installed
 ```
 
+The labelled set was written before the code and doubles as a spec, which is how it caught a real drift on the live deployment: only 3 of the 19 labelled categories (`Home & Garden > Decor > Door Mats`, `… > Lawn & Garden > Bird Feeders`, …) were exact paths in the shipped taxonomy, so a correct model answer was nearest-mapped, flagged for review and scored wrong. The taxonomy now uses the same Google-style paths as the labels and the fixture generator, so the category metric measures the model rather than the list it was given.
+
 The restart demo:
 1. Start a 10k import (`fixtures/bulk-10000.csv`).
 2. `kill -9` the worker at ~40%, then start it again.
@@ -272,25 +275,27 @@ Most of the accuracy comes before and after the model, not from it:
 - A negation-aware risky-term lexicon catches claims smuggled into titles, descriptions or tags.
 - Low confidence or any guard intervention routes the product to review instead of the storefront.
 
-The eval harness found one real gap during development: a claim like "frost-proof" could pass quote verification when quoted from "not frost-proof". That's exactly the failure the hallucination metric exists to catch, so the negation check has to apply to verified claims as well.
+The eval harness found one real gap during development: a claim like "frost-proof" could pass quote verification when quoted from "not frost-proof". That's exactly the failure the hallucination metric exists to catch, so the negation check has to apply to verified claims as well. Live supplier data surfaced the mirror image: "non-slip backing" was *rejected* as negated, because dash-splitting turned the compound "non-slip" into "non slip". A hyphen directly after a negation word now forms one token, with regression tests for both directions.
 
-**Measured numbers** <!-- MEASURED: fill in from runs -->
+**Measured numbers**
 
 | Metric | Value | How measured |
 |---|---|---|
 | Throughput (fake provider) | **10,000 rows in 69 s ≈ 8,660 rows/min** (3,368 products, 0 duplicate SKUs/handles) | `bulk-10000.csv`, local, `AI_PROVIDER=fake` |
-| Real AI run (OpenCode Go) | **103 rows / 22 products: builds ≈ 50 s, translations ≈ 3 min, 0 rate-limit pauses, 304/304 translations fresh** | `real-sample-100.csv` + photos, concurrency 8 / 8 |
-| Throughput (OpenCode Go, larger run) | <!-- MEASURED --> rows/min | `real-sample-1000.csv` |
+| Real AI run (OpenCode Go) | **500 rows → 233 products: build ≈ 7.5 min, DE+FR translation ≈ 12 min (19.5 min end-to-end), 0 failed rows, 60 of 233 products flagged for review, 3,162/3,168 translations fresh** (on one product both German attempts failed the mask guard → English fallback, case A13) | `messy-500.xlsx` + photos, live 2 GB Lightsail, concurrency 8 / 4 |
+| Throughput (OpenCode Go, larger run) | **≈ 26 rows/min end-to-end (≈ 67 rows/min while building); 233 products from 500 rows** | same run, `messy-500.xlsx` |
 | Groq free tier | 20 rows took 384 s, almost all of it rate-limit pauses | `small-20.csv`; 8k tokens/min |
-| Tokens per product (real models) | ≈ 1,275 input + 800 output | `ai_calls` |
-| Storefront p95, idle | <!-- MEASURED --> ms | autocannon, 100 connections, product page |
-| Storefront p95, during 10k import | <!-- MEASURED --> ms | same, while the import runs |
-| Cost per 1,000 products | $<!-- MEASURED --> | `ai_calls` sum ÷ products |
-| Savings from routing + skip-unchanged | <!-- MEASURED -->% | baseline vs actual on the Metrics tab |
-| Eval: category / material / hallucinated claims | <!-- MEASURED --> | `bun run eval` |
+| Tokens per product (real models) | ≈ **2,933 input + 2,124 output** (build + repair + DE & FR) at build batch size 1; ≈ **1,275 / 800** with 5-product build batches | `ai_calls` on the `messy-500` run (live host) |
+| Storefront p97.5, idle | **457 ms** product page / 759 ms collection, 75 / 42 req/s, 0 errors | autocannon 25 connections, 60 s, live 2 vCPU host |
+| Storefront p97.5, during 10k import | **1,750 ms** collection, 21 req/s, 0 errors (idle: 759 ms / 42 req/s) | same load during a fake-provider 10,000-row import |
+| Cost per 1,000 products | **$1.15** | `ai_calls` sum ÷ products on the `messy-500` run (the Metrics tab averages every recorded call, evals included) |
+| Savings from routing + skip-unchanged | **33%** ($0.2680 actual vs $0.3995 all-strong baseline) | baseline vs actual, `ai_calls` / Metrics tab |
+| Eval: category / material / hallucinated claims | **85.7% category exact (9.5% before the taxonomy fix), 100% material, 0% hallucinated, 90.1% claim precision, 76.2% grouping (v1)**; v2 matches the categories and trades precision for recall (77.4% vs 73.8%) | `bun run eval -- --prompt v1,v2`, 42 labelled products, live host |
+
+Read the two storefront rows together: during the import the storefront kept answering with 0 errors, but throughput halved — the worker shares the container and the box's 2 vCPUs. The fake provider builds at ~26 rows/s, roughly 60× the real provider's ~0.4 rows/s, so this is a CPU-saturation upper bound; a real 10k import spreads the same writes over hours.
 
 **What breaks first at 1,000,000 products in 8 languages, and how would you fix it?**
-1. **Translation volume and provider quotas.** 1M products × ~6 fields × 8 locales ≈ 48M strings, roughly 4–5 billion tokens with our measured ~1,275 in / 800 out per product per 2 locales.
+1. **Translation volume and provider quotas.** 1M products × ~6 fields × 8 locales ≈ 48M strings; at our measured ~2,820 in / 2,105 out per product for build + DE+FR, eight locales land around **13 billion tokens** (build batching shifts this materially).
    - Per-model provider allowances break first (we already hit Groq's free-tier cap at 10k rows; OpenCode Go's per-model monthly dollar caps would follow at this scale).
    - Fix: a paid provider tier with a batch API (≈50% cheaper, no rate-limit pressure), keeping the per-tier model chains so one exhausted model never stalls the pipeline.
    - Fix: translation memory keyed by `hash(source text, locale)`. Supplier catalogs repeat a lot.
@@ -322,9 +327,8 @@ Every module was reviewed, typechecked and tested. The eval harness and fixtures
 
 ## Screenshots
 
-<!-- Add screenshots / GIFs here. -->
+Screenshots and the 3–5 minute walkthrough are shared with the submission; they are deliberately not committed here because they show the private demo instance and its seeded data. The walkthrough covers:
 
-Screens to capture:
 1. **Upload tab** with a run in progress: live stage bar, done / needs-review / failed / pending counts, and the Cancel button.
 2. **"Paused — resuming in X min"** banner (run with `AI_PROVIDER=fake FAKE_AI_FAILURES=rate_limit:0.3` to trigger it on demand).
 3. **Products tab**: photo thumbnails, SKU · variants, price-from, colour-coded confidence, review reasons.
@@ -333,7 +337,3 @@ Screens to capture:
 6. **Metrics tab**: rates, model usage, cost over time, speed, translation coverage / out-of-date count.
 7. **Restart demo**: the worker killed mid-import and the run completing with counts adding up (GIF).
 8. **Settings**: webhook URL, API keys, country → language table.
-
-| Upload & progress | Review | Storefront (DE) | Metrics |
-|---|---|---|---|
-| _todo_ | _todo_ | _todo_ | _todo_ |
