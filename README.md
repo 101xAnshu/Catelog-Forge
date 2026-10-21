@@ -202,7 +202,7 @@ Decisions worth calling out:
 - **Skip unchanged:** re-imports skip products whose input hash didn't change ($0).
 - **Batching:** 5 products per build request amortises the system prompt; up to 15 fields per translation request, per locale.
 - **Batch API:** not available on either provider for this account (Groq free tier returns `403`; OpenCode Go documents none). `useBatch` is kept as a setting for providers that offer one.
-- **Measured token usage** on real models: ≈ **1,275 input + 800 output tokens per product** with 5-product build batches (build ≈ 600 / 245, DE + FR translation ≈ 675 / 555). On the live 2 GB host builds run one product per call, which measures ≈ **2,820 input + 2,105 output per product** — build batching is the single biggest input-token lever.
+- **Measured token usage** on real models: ≈ **1,275 input + 800 output tokens per product** with 5-product build batches (build ≈ 600 / 245, DE + FR translation ≈ 675 / 555). On the live 2 GB host builds run one product per call, which measures ≈ **2,933 input + 2,124 output per product** — build batching is the single biggest input-token lever.
 - **Cost note:** OpenCode Go bills against a monthly allowance and doesn't publish per-token prices for these models, so `packages/ai/src/cost.ts` uses estimated prices (free models at $0). Cost figures for OpenCode Go runs are therefore estimates; Groq figures use its list prices.
 - **Tracking:** every AI call is stored in `ai_calls` with model, tier, tokens, latency, outcome, cost, and a **baseline cost** (the same tokens on the strong model). The Metrics tab shows cost per product, per model and per import, plus **money saved** = baseline − actual.
 
@@ -295,7 +295,7 @@ The eval harness found one real gap during development: a claim like "frost-proo
 Read the two storefront rows together: during the import the storefront kept answering with 0 errors, but throughput halved — the worker shares the container and the box's 2 vCPUs. The fake provider builds at ~26 rows/s, roughly 60× the real provider's ~0.4 rows/s, so this is a CPU-saturation upper bound; a real 10k import spreads the same writes over hours.
 
 **What breaks first at 1,000,000 products in 8 languages, and how would you fix it?**
-1. **Translation volume and provider quotas.** 1M products × ~6 fields × 8 locales ≈ 48M strings; at our measured ~2,820 in / 2,105 out per product for build + DE+FR, eight locales land around **13 billion tokens** (build batching shifts this materially).
+1. **Translation volume and provider quotas.** 1M products × ~6 fields × 8 locales ≈ 48M strings; at our measured ~2,933 in / 2,124 out per product for build + DE+FR, eight locales land around **13 billion tokens** (build batching shifts this materially).
    - Per-model provider allowances break first (we already hit Groq's free-tier cap at 10k rows; OpenCode Go's per-model monthly dollar caps would follow at this scale).
    - Fix: a paid provider tier with a batch API (≈50% cheaper, no rate-limit pressure), keeping the per-tier model chains so one exhausted model never stalls the pipeline.
    - Fix: translation memory keyed by `hash(source text, locale)`. Supplier catalogs repeat a lot.
