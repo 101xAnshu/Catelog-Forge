@@ -8,7 +8,7 @@ Seeded demo key: `cf_demo_0123456789abcdef0123456789abcdef`. Every key is scoped
 ```bash
 curl -X POST http://localhost:3000/api/v1/imports \
   -H "Authorization: Bearer $KEY" \
-  -F sheet=@fixtures/small.csv \
+  -F sheet=@fixtures/small-20.csv \
   -F photos=@fixtures/photos.zip \
   -F routing=auto -F promptVersion=v1
 ```

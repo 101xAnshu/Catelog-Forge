@@ -13,8 +13,7 @@
     "db:migrate": "bun run --cwd packages/db migrate",
     "db:seed": "bun run --cwd packages/db seed",
     "worker": "bun run --cwd apps/worker start",
-    "fixtures": "bun scripts/gen-fixtures.ts",
-    "eval": "bun eval/run.ts"
+    "eval": "bun run eval/run.ts"
   },
   "devDependencies": {
     "@types/bun": "^1.3.2",

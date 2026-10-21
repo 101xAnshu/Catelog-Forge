@@ -77,7 +77,7 @@ packages/core/     Pure domain logic with no I/O: cleaning, grouping, photo matc
 packages/db/       Drizzle schema, SQL migrations, store-scoped pools
 packages/queue/    Queue names, job contracts, enqueue helpers (deterministic job ids)
 packages/ai/       Provider interface, OpenCode Go provider (default), Groq provider, deterministic fake provider, cost table
-fixtures/          Generated messy sheets + photos (bun run fixtures)
+fixtures/          Sample sheets + photos (slices of a real supplier export)
 eval/              Labelled test set + evaluation runner
 load/              k6 + autocannon storefront load tests
 ```
@@ -91,7 +91,6 @@ docker compose up -d                 # Postgres 16 (:5433) + Redis 7 with AOF (:
 bun install
 cp .env.example .env                 # add OPENCODE_API_KEY (or GROQ_API_KEY), or leave both empty for demo mode
 bun run db:migrate && bun run db:seed
-bun run fixtures                     # generates fixtures/*.csv|xlsx|zip
 bun run dev                          # web on http://localhost:3000
 bun run worker                       # in a second terminal (run it twice for 2 workers)
 ```
@@ -112,7 +111,7 @@ Provider selection: `AI_PROVIDER` if set, otherwise **OpenCode Go → Groq → f
 
 **Demo mode:** with no AI key (or `AI_PROVIDER=fake`), the app uses a deterministic fake provider and shows a banner. It can also inject failures (`FAKE_AI_FAILURES=rate_limit:0.1,invalid_json:0.1,timeout:0.05`) to demonstrate retries and rate-limit pauses. Use it for the 10k-row scale demo: it finishes in about a minute.
 
-**Sample data:** `fixtures/` has `small-20.csv`, `messy-500.xlsx` (German headers, header on line 4), `bulk-10000.csv` and `photos.zip` (synthetic coloured tiles named by SKU, plus orphans, a corrupt file and `__MACOSX` junk). A real supplier sheet we tested against during development had **11,576 rows** — over the 10,000-row limit, rejected by design with `TOO_MANY_ROWS`. It is not included (supplier data), so every measured run quoted in this README uses the tracked fixtures above and can be reproduced.
+**Sample data:** `fixtures/` holds three sheets cut from the same real supplier export plus that supplier's photo folder, so every sheet works with the same zip: `small-20.csv` (20 rows → 7 products, all with photos), `messy-500.xlsx` (500 real rows, German headers on line 4, 365 products), `bulk-10000.csv` (10,000 rows → 3,447 products, 1,409 photos attach) and `photos.zip` (1,437 real photos: SKU-named, plus 15 `OLD-*`/5 `MISC-*` orphans, a text file named `.jpg`, a PDF named `.jpg` and three 4,200×3,000 photos). See [`fixtures/README.md`](fixtures/README.md) for the slice rules and the full list of real-world mess. The 11,576-row export itself is not tracked (supplier data); any sheet over **10,000 rows** is rejected by design with `TOO_MANY_ROWS`.
 
 **Public API:** the demo key is `cf_demo_0123456789abcdef0123456789abcdef` (see [Public API](#public-api)).
 
@@ -315,7 +314,7 @@ Read the two storefront rows together: during the import the storefront kept ans
 **What did you learn?**
 Reliability work is mostly designing what's stored, not adding retries. Once every unit of work has a durable status and a natural key, retries, restarts and duplicates stop being special cases. On accuracy: a small labelled set paid for itself immediately. It found a negation bug that would have shipped "frost-proof" to a storefront.
 
-Testing against a real supplier sheet taught the rest: the synthetic fixtures passed, but real SKU schemes (`PLN-1066-16-A`), photos named after the product rather than a variant, and supplier category names all needed changes that only showed up on real data. A provider's free-tier limits also shape the architecture: per-model fallback chains turned constant "Paused" banners into zero pauses.
+Testing against a real 11,576-row supplier export taught the rest: the synthetic fixtures passed, but real SKU schemes (`PLN-1066-16-A`), photos named after the base product rather than a variant, and supplier category names all needed changes that only showed up on real data. That is why the sample sheets now ship as slices of that export with its photos. A provider's free-tier limits also shape the architecture: per-model fallback chains turned constant "Paused" banners into zero pauses.
 
 **How did you use AI while building this?**
 AI coding agents as pair programmers:
