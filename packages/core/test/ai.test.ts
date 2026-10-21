@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
-  AiProductSchema, applyGuards, buildProductPrompt, cleanRow, detectHeaders, groupRows, maskForTranslation, routeModel,
+  AiProductSchema, applyGuards, buildProductPrompt, claimSupportedByQuote, cleanRow, detectHeaders, groupRows, maskForTranslation, routeModel,
   slugify, toCsv, toShopifyCsvRows, unmask, type ExportProduct,
 } from "../src";
 
@@ -41,8 +41,9 @@ describe("applyGuards", () => {
   test("supplier category synonyms map to the taxonomy without review", () => {
     for (const [supplier, expected] of [
       ["Home Decor > Cushions", "Home & Garden > Decor > Cushions & Throws"],
-      ["Kitchen & Dining > Boards", "Home & Garden > Kitchen & Dining > Cutting & Serving Boards"],
-      ["Storage > Baskets", "Home & Garden > Decor > Baskets & Storage"],
+      ["Kitchen & Dining > Boards", "Home & Garden > Kitchen & Dining > Cutting Boards"],
+      ["Storage > Baskets", "Home & Garden > Storage & Organisation > Baskets"],
+      ["Door Mats", "Home & Garden > Decor > Door Mats"],
       ["Lighting > Table Lamps", "Home & Garden > Lighting > Table Lamps"],
       ["Furniture > Chairs", "Home & Garden > Furniture > Chairs"],
     ] as const) {
@@ -151,5 +152,17 @@ describe("exports", () => {
   test("slugify", () => {
     expect(slugify("Größe Übertopf – Terracotta 20cm!")).toBe("grosse-ubertopf-terracotta-20cm");
     expect(slugify("!!!")).toBe("product");
+  });
+});
+
+describe("claim support", () => {
+  test("a hyphenated negation word is part of the claim, not a negation of it", () => {
+    expect(claimSupportedByQuote("non-slip backing", "Non-slip PVC backing.").ok).toBe(true);
+    expect(claimSupportedByQuote("non-toxic", "Non-toxic paint.").ok).toBe(true);
+  });
+  test("standalone negations still reject the claim", () => {
+    expect(claimSupportedByQuote("drainage hole", "No drainage hole").reason).toBe("Source negates this claim");
+    expect(claimSupportedByQuote("frost-proof", "not frost-proof").reason).toBe("Source negates this claim");
+    expect(claimSupportedByQuote("frost-proof", "frost-resistant (not frost-proof)").reason).toBe("Source negates this claim");
   });
 });

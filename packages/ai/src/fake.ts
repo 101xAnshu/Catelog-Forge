@@ -86,12 +86,13 @@ const CATEGORY_HINTS: Array<[RegExp, string]> = [
   [/lamp|light|lampe|lantern|laterne/i, "Home & Garden > Lighting > Lamps"],
   [/mug|cup|tasse|bowl|plate|teller/i, "Home & Garden > Kitchen & Dining > Tableware"],
   [/cushion|pillow|kissen|throw|blanket/i, "Home & Garden > Decor > Cushions & Throws"],
-  [/candle|kerze/i, "Home & Garden > Decor > Candles & Holders"],
-  [/chair|table|stool|bench|tisch|stuhl/i, "Home & Garden > Garden Furniture"],
-  [/basket|korb|storage/i, "Home & Garden > Decor > Baskets & Storage"],
-  [/watering can|gießkanne/i, "Home & Garden > Watering Cans"],
-  [/bird|vogel/i, "Home & Garden > Bird Feeders & Houses"],
-  [/tool|trowel|shovel|rake|pruner|shears/i, "Home & Garden > Garden Tools"],
+  [/candle|kerze/i, "Home & Garden > Decor > Candles"],
+  [/coir|door mat|fußmatte|fussmatte/i, "Home & Garden > Decor > Door Mats"],
+  [/chair|table|stool|bench|tisch|stuhl/i, "Home & Garden > Lawn & Garden > Outdoor Furniture"],
+  [/basket|korb|storage/i, "Home & Garden > Storage & Organisation > Baskets"],
+  [/watering can|gießkanne/i, "Home & Garden > Watering Equipment"],
+  [/bird|vogel/i, "Home & Garden > Lawn & Garden > Bird Feeders"],
+  [/tool|trowel|shovel|rake|pruner|shears/i, "Home & Garden > Gardening > Gardening Tools"],
 ];
 
 const DE: Record<string, string> = {

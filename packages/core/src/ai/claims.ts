@@ -13,7 +13,9 @@ export function normalizeForMatch(s: string): string {
   return s
     .toLowerCase()
     .normalize("NFKC")
-    .replace(/[‐‑‒–—-]/g, " ")
+    // A hyphen after a negation word forms a compound, not a negation: "non-slip" is the claim
+    // "nonslip", not "slip" being denied. Dash-split everything else ("frost-proof" → "frost proof").
+    .replace(/(\p{L}+)[‐‑‒–—-](\p{L}+)/gu, (_m, a: string, b: string) => (NEGATIONS.has(a) ? a + b : `${a} ${b}`))
     .replace(/[^\p{L}\p{N}%°]+/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
