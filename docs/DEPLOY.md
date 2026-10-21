@@ -62,6 +62,10 @@ docker compose -f docker-compose.prod.yml up -d --build
 
 Deploy the `Dockerfile` as a web service on port 3000 with a persistent disk at `/data`. Add managed Postgres and Redis, set the four required variables, and use `/api/health` as the health check.
 
+## Option D: AWS Lightsail (one small VM)
+
+See [`deploy/aws/README.md`](../deploy/aws/README.md) for a 2 GB Lightsail instance (Sydney) running the app, Postgres, Redis and Caddy with HTTP basic auth. The image is built locally and copied to the host, so the VM never runs the Next.js build.
+
 ## Scaling out
 
 For more AI throughput, raise the concurrency variables first. To run several worker containers, use `ROLE=web` for one service and `ROLE=worker` for the others, and point every `STORAGE_DIR` at shared storage (a shared volume, or swap the local-disk adapter in `apps/web/lib/storage.ts` and `apps/worker/src/storage.ts` for S3). Jobs, retries and restarts are coordinated through Postgres and Redis, so any number of workers is safe.

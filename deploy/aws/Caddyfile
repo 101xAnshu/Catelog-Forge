@@ -1,0 +1,40 @@
+# CatalogForge reverse proxy + TLS + HTTP basic auth.
+#
+# The site address comes from .env (CADDY_DOMAIN), e.g. 15-135-152-250.sslip.io.
+# sslip.io resolves that hostname to 15.135.152.250, so Caddy gets a real Let's Encrypt cert.
+{
+	admin off
+	grace_period 10s
+}
+
+{$CADDY_DOMAIN} {
+	encode zstd gzip
+
+	# Private demo: one shared password, no signup or storefront exposed without it.
+	# The key-authenticated API paths are exempt: they carry `Authorization: Bearer <api key>`,
+	# and basic_auth would reject that header before the request reaches the app (a request
+	# cannot carry Basic and Bearer credentials in the same Authorization header).
+	@protected not path /api/v1/* /api/exports
+	basic_auth @protected {
+		{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+	}
+
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+
+	reverse_proxy app:3000 {
+		health_uri /api/health
+		health_interval 30s
+		health_timeout 5s
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
