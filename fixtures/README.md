@@ -6,7 +6,7 @@ Sample sheets and photos for the first demo import, local runs and the scale tes
 |---|---|---|
 | `small-20.csv` | 20 | 7 products: complete rows of photo-matched base SKUs, multi-variant families first. All 7 products get a photo. First demo import. |
 | `messy-500.xlsx` | 500 | Real rows chosen for mess, German headers on **line 4** under two title rows. 365 products, 107 of them with a photo. |
-| `bulk-10000.csv` | 10,000 | Every row whose base SKU has a photo, then the rest of the export in sheet order. 3,447 products; 1,409 photos attach. Scale / restart demo. |
+| `bulk-10000.csv` | 10,000 | Every row whose base SKU has a photo, then the rest of the export in sheet order. 3,447 products; 1,407 photos attach. Scale / restart demo. |
 | `photos.zip` | 1,437 photos | 1,412 product photos named by base SKU, plus deliberate edge cases: 15 `OLD-*` and 5 `MISC-*` orphans, `BROKEN-001.jpg` (a text file), `SPEC-001.jpg` (a PDF) and three 4,200×3,000 `BIG-*` photos. |
 
 ## What is messy in the export (all real, nothing injected)
@@ -31,5 +31,5 @@ The full 11,576-row export is not tracked (supplier data); these slices are what
 
 - Photos are named by base SKU — `CHR-1071.jpg` matches every variant `CHR-1071-*`; a trailing `-2` is a second photo of the same product. Photos can also match through the sheet's `Image File` column.
 - The folder is real but repetitive: 1,437 filenames map to **93 unique images** (the supplier reused stock photos across SKUs). Every filename is still an asset and matches its own row; storage keeps one copy per image.
-- `small-20` and `messy-500` do not contain every product the photo folder covers, so their imports list the remaining photos as **orphan photos** with a reason. `bulk-10000` includes every photo-matched product: 1,409 of 1,437 photos attach, and only the 25 junk files plus 3 strays are orphaned.
+- `small-20` and `messy-500` do not contain every product the photo folder covers, so their imports list the remaining photos as **orphan photos** with a reason. `bulk-10000` includes every photo-matched product: 1,407 of 1,437 photos attach. The 28 orphans are 15 `OLD-*`, 5 `MISC-*`, 3 `BIG-*` and five `PLN-999x` strays; `BROKEN-001.jpg` and `SPEC-001.jpg` are rejected as unreadable (a text file and a PDF) rather than silently dropped.
 - Ambiguous or unmatched photos are never attached by guesswork; they are reported in the import.

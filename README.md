@@ -9,7 +9,7 @@ CatalogForge turns a merchant's messy supplier spreadsheet and photo folder into
 - never takes the storefront down: reads come from a denormalized snapshot on their own pool, so an import competes for CPU but never for locks, AI capacity or the read path.
 
 - **Edge cases first:** [`EDGE-CASES.md`](EDGE-CASES.md), the first commit in the history.
-- **Live demo:** [`https://15-135-152-250.sslip.io`](https://15-135-152-250.sslip.io). The demo is private: the proxy asks for HTTP basic auth (reviewer credentials are shared with the submission, not committed here). Then log in with the prefilled demo account **`demo@catalogforge.dev` / `demo1234`**, upload `fixtures/small-20.csv` + `fixtures/photos.zip`, or call the [public API](#public-api) with the demo key. Hosted on a 2 GB AWS Lightsail instance — see [`deploy/aws/README.md`](deploy/aws/README.md) for why (Postgres + Redis + a long-running worker don't fit serverless free tiers). It runs the real provider at ≈26 rows/min end-to-end, so a 500-row sheet is minutes, not seconds; the instant 10,000-row scale demo is `AI_PROVIDER=fake` locally (see below).
+- **Live demo:** [`https://15-135-152-250.sslip.io`](https://15-135-152-250.sslip.io). The demo is private: the proxy asks for HTTP basic auth (reviewer credentials are shared with the submission, not committed here). Then log in with the prefilled demo account **`demo@catalogforge.dev` / `demo1234`**, upload `fixtures/small-20.csv` + `fixtures/photos.zip`, or call the [public API](#public-api) with the demo key. Hosted on a 2 GB AWS Lightsail instance — see [`deploy/aws/README.md`](deploy/aws/README.md) for why (Postgres + Redis + a long-running worker don't fit serverless free tiers). It runs the real provider at ≈19–38 rows/min end-to-end: 500 rows take ~27 minutes, and the live 10,000-row run took 4 h 24 min; for a no-AI scale check, `AI_PROVIDER=fake` locally imports 10,000 rows + 1,437 photos in 8 minutes (see below).
 - **Deploy guide:** [`docs/DEPLOY.md`](docs/DEPLOY.md). One Docker image (migrations, demo seed, worker and web), so you only set `DATABASE_URL`, `REDIS_URL`, `OPENCODE_API_KEY` and `APP_URL`. Railway: `railway.json`. Any VPS: `docker compose -f docker-compose.prod.yml up -d`.
 - **Sample data:** [`fixtures/`](fixtures/README.md)
 
@@ -111,7 +111,7 @@ Provider selection: `AI_PROVIDER` if set, otherwise **OpenCode Go → Groq → f
 
 **Demo mode:** with no AI key (or `AI_PROVIDER=fake`), the app uses a deterministic fake provider and shows a banner. It can also inject failures (`FAKE_AI_FAILURES=rate_limit:0.1,invalid_json:0.1,timeout:0.05`) to demonstrate retries and rate-limit pauses. Use it for the 10k-row scale demo: it finishes in about a minute.
 
-**Sample data:** `fixtures/` holds three sheets cut from the same real supplier export plus that supplier's photo folder, so every sheet works with the same zip: `small-20.csv` (20 rows → 7 products, all with photos), `messy-500.xlsx` (500 real rows, German headers on line 4, 365 products), `bulk-10000.csv` (10,000 rows → 3,447 products, 1,409 photos attach) and `photos.zip` (1,437 real photos: SKU-named, plus 15 `OLD-*`/5 `MISC-*` orphans, a text file named `.jpg`, a PDF named `.jpg` and three 4,200×3,000 photos). See [`fixtures/README.md`](fixtures/README.md) for the slice rules and the full list of real-world mess. The 11,576-row export itself is not tracked (supplier data); any sheet over **10,000 rows** is rejected by design with `TOO_MANY_ROWS`.
+**Sample data:** `fixtures/` holds three sheets cut from the same real supplier export plus that supplier's photo folder, so every sheet works with the same zip: `small-20.csv` (20 rows → 7 products, all with photos), `messy-500.xlsx` (500 real rows, German headers on line 4, 365 products), `bulk-10000.csv` (10,000 rows → 3,447 products, 1,407 photos attach) and `photos.zip` (1,437 real photos: SKU-named, plus 15 `OLD-*`/5 `MISC-*` orphans, a text file named `.jpg`, a PDF named `.jpg` and three 4,200×3,000 photos). See [`fixtures/README.md`](fixtures/README.md) for the slice rules and the full list of real-world mess. The 11,576-row export itself is not tracked (supplier data); any sheet over **10,000 rows** is rejected by design with `TOO_MANY_ROWS`.
 
 **Public API:** the demo key is `cf_demo_0123456789abcdef0123456789abcdef` (see [Public API](#public-api)).
 
@@ -169,7 +169,7 @@ Decisions worth calling out:
    - Every correction is recorded as an issue the reviewer can see.
 2. **Grouping:** rows are grouped by base SKU, parent SKU, **SKU family** (`PLN-1066-16-A` and `PLN-1066-30-T` → `PLN-1066`, so an English and a German row of the same product join) or brand + normalised name, whatever the row order. Bare model numbers keep products apart ("Planter 1" ≠ "Planter 2"). Exact duplicates are merged; conflicting duplicates are flagged, not guessed.
    - Photos match by SKU in the filename, by **SKU prefix** (`PLN-1066.jpg`, `PLN-1066-2.jpg` → product `PLN-1066`), or by the sheet's image column. Ambiguous or unmatched photos are listed as orphans, never guessed.
-   - On a real 11.5k-row supplier sheet with 1,437 photos, these fixes took photo matches from **1,043 → 1,409** (the remaining 28 are genuine orphans such as `MISC-*`/`OLD-*`) and merged split variants from **5,051 → 3,547** products.
+   - On a real 11.5k-row supplier sheet with 1,437 photos, these fixes took photo matches from **1,043 → 1,407 attached** (28 genuine orphans plus 2 unreadable files) and merged split variants from **5,051 → 3,547** products.
 3. **Prompting:** the source rows are passed as data with row numbers and column names, with these rules:
    - copy hedges ("frost-resistant, not frost-proof")
    - never upgrade a claim
@@ -201,7 +201,7 @@ Decisions worth calling out:
 - **Skip unchanged:** re-imports skip products whose input hash didn't change ($0).
 - **Batching:** 5 products per build request amortises the system prompt; up to 15 fields per translation request, per locale.
 - **Batch API:** not available on either provider for this account (Groq free tier returns `403`; OpenCode Go documents none). `useBatch` is kept as a setting for providers that offer one.
-- **Measured token usage** on real models: ≈ **1,275 input + 800 output tokens per product** with 5-product build batches (build ≈ 600 / 245, DE + FR translation ≈ 675 / 555). On the live 2 GB host builds run one product per call, which measures ≈ **2,933 input + 2,124 output per product** — build batching is the single biggest input-token lever.
+- **Measured token usage** on real models: ≈ **1,275 input + 800 output tokens per product** with 5-product build batches (build ≈ 600 / 245, DE + FR translation ≈ 675 / 555). On the live 2 GB host builds run one product per call, which measures ≈ **3,069 input + 2,092 output per product** on the 10k run — build batching is the single biggest input-token lever.
 - **Cost note:** OpenCode Go bills against a monthly allowance and doesn't publish per-token prices for these models, so `packages/ai/src/cost.ts` uses estimated prices (free models at $0). Cost figures for OpenCode Go runs are therefore estimates; Groq figures use its list prices.
 - **Tracking:** every AI call is stored in `ai_calls` with model, tier, tokens, latency, outcome, cost, and a **baseline cost** (the same tokens on the strong model). The Metrics tab shows cost per product, per model and per import, plus **money saved** = baseline − actual.
 
@@ -280,21 +280,22 @@ The eval harness found one real gap during development: a claim like "frost-proo
 
 | Metric | Value | How measured |
 |---|---|---|
-| Throughput (fake provider) | **10,000 rows in 69 s ≈ 8,660 rows/min** (3,368 products, 0 duplicate SKUs/handles) | `bulk-10000.csv`, local, `AI_PROVIDER=fake` |
-| Real AI run (OpenCode Go) | **500 rows → 233 products: build ≈ 7.5 min, DE+FR translation ≈ 12 min (19.5 min end-to-end), 0 failed rows, 60 of 233 products flagged for review, 3,162/3,168 translations fresh** (on one product both German attempts failed the mask guard → English fallback, case A13) | `messy-500.xlsx` + photos, live 2 GB Lightsail, concurrency 8 / 4 |
-| Throughput (OpenCode Go, larger run) | **≈ 26 rows/min end-to-end (≈ 67 rows/min while building); 233 products from 500 rows** | same run, `messy-500.xlsx` |
+| Throughput (fake provider) | **10,000 rows + 1,437 photos in 8 min 10 s ≈ 1,230 rows/min** (3,447 products, 28 orphan photos; 2.5 min of that is photo decode + thumbnails) | `bulk-10000.csv` + `photos.zip`, local, `AI_PROVIDER=fake` |
+| Real AI run (OpenCode Go) | **500 rows → 365 products: build ≈ 11 min, DE+FR translation ≈ 15 min (27 min end-to-end), 0 failed rows, 235 of 500 rows flagged for review, 107 products with photos** | `messy-500.xlsx` + `photos.zip`, live 2 GB Lightsail, concurrency 8 / 4 |
+| Real AI run (OpenCode Go, 10k) | **10,000 rows + 1,437 photos → 3,447 products: build ≈ 2 h, DE+FR translation ≈ 2 h 24 min (4 h 24 min end-to-end), 0 failed rows, 3,161 done + 6,839 needs_review, 1,344 auto-approved / 2,103 in review, 1,407 photos attached (1,078 products) + 28 orphans; $4.18 actual vs $5.91 all-strong baseline** | `bulk-10000.csv` + `photos.zip`, live 2 GB Lightsail, concurrency 8 / 8 |
+| Throughput (OpenCode Go) | **≈ 19 rows/min end-to-end on 500 rows; ≈ 38 rows/min end-to-end on 10,000 (≈ 83 rows/min and ≈ 29 products/min while building)** | both live runs |
 | Groq free tier | 20 rows took 384 s, almost all of it rate-limit pauses | `small-20.csv`; 8k tokens/min |
-| Tokens per product (real models) | ≈ **2,933 input + 2,124 output** (build + repair + DE & FR) at build batch size 1; ≈ **1,275 / 800** with 5-product build batches | `ai_calls` on the `messy-500` run (live host) |
-| Storefront p97.5, idle | **457 ms** product page / 759 ms collection, 75 / 42 req/s, 0 errors | autocannon 25 connections, 60 s, live 2 vCPU host |
-| Storefront p97.5, during 10k import | **1,750 ms** collection, 21 req/s, 0 errors (idle: 759 ms / 42 req/s) | same load during a fake-provider 10,000-row import |
-| Cost per 1,000 products | **$1.15** | `ai_calls` sum ÷ products on the `messy-500` run (the Metrics tab averages every recorded call, evals included) |
-| Savings from routing + skip-unchanged | **33%** ($0.2680 actual vs $0.3995 all-strong baseline) | baseline vs actual, `ai_calls` / Metrics tab |
+| Tokens per product (real models) | ≈ **2,667 input + 1,792 output** on the 500-row run and ≈ **3,069 / 2,092** on the 10k run (build + repair + DE & FR) at build batch size 1; ≈ **1,275 / 800** with 5-product build batches | `ai_calls` on the live runs |
+| Storefront p97.5, idle | **443 ms** product page / 811 ms collection, 79 / 42 req/s, 0 errors | autocannon 25 connections, 60 s, in-container against the live 2 vCPU host |
+| Storefront p97.5, during 10k import | **3,347 ms** collection, 21 req/s, 0 errors (idle: 811 ms / 42 req/s) | same load, run during the live real-provider 10,000-row import |
+| Cost per 1,000 products | **$1.21** on the 10k run ($4.18 ÷ 3,447); **$1.00** on the 500-row run | `ai_calls` per import (the Metrics tab averages every recorded call, evals included) |
+| Savings from model routing | **29%** on the 10k run ($4.18 actual vs $5.91 all-strong baseline); **32%** on the 500-row run | baseline vs actual, `ai_calls` |
 | Eval: category / material / hallucinated claims | **85.7% category exact (9.5% before the taxonomy fix), 100% material, 0% hallucinated, 90.1% claim precision, 76.2% grouping (v1)**; v2 matches the categories and trades precision for recall (77.4% vs 73.8%) | `bun run eval -- --prompt v1,v2`, 42 labelled products, live host |
 
-Read the two storefront rows together: during the import the storefront kept answering with 0 errors, but throughput halved — the worker shares the container and the box's 2 vCPUs. The fake provider builds at ~26 rows/s, roughly 60× the real provider's ~0.4 rows/s, so this is a CPU-saturation upper bound; a real 10k import spreads the same writes over hours.
+Read the two storefront rows together: during the real 10k import the storefront kept answering with 0 errors, but throughput halved — the worker shares the container and the box's 2 vCPUs. The fake provider builds at ~26 rows/s, roughly 19× the real provider's ~1.4 rows/s while building, so this is a CPU-saturation upper bound; a real 10k import spreads the same writes over ~2 hours.
 
 **What breaks first at 1,000,000 products in 8 languages, and how would you fix it?**
-1. **Translation volume and provider quotas.** 1M products × ~6 fields × 8 locales ≈ 48M strings; at our measured ~2,933 in / 2,124 out per product for build + DE+FR, eight locales land around **13 billion tokens** (build batching shifts this materially).
+1. **Translation volume and provider quotas.** 1M products × ~6 fields × 8 locales ≈ 48M strings; at our measured ~3,069 in / 2,092 out per product for build + DE+FR, eight locales land around **14 billion tokens** (build batching shifts this materially).
    - Per-model provider allowances break first (we already hit Groq's free-tier cap at 10k rows; OpenCode Go's per-model monthly dollar caps would follow at this scale).
    - Fix: a paid provider tier with a batch API (≈50% cheaper, no rate-limit pressure), keeping the per-tier model chains so one exhausted model never stalls the pipeline.
    - Fix: translation memory keyed by `hash(source text, locale)`. Supplier catalogs repeat a lot.
@@ -326,7 +327,25 @@ Every module was reviewed, typechecked and tested. The eval harness and fixtures
 
 ## Screenshots
 
-Screenshots and the 3–5 minute walkthrough are shared with the submission; they are deliberately not committed here because they show the private demo instance and its seeded data. The walkthrough covers:
+Captured from the live demo after the real 10,000-row import (10,000 rows + 1,437 photos → 3,447 products, 0 failed). Click any image for the full-size PNG in [`docs/screenshots/`](docs/screenshots/).
+
+**Imports** — all three sample sheets completed; the 10k run shows 3,161 done + 6,839 needs review, 0 failed, and "counts add up". Photos are uploaded with the sheet and matched by SKU.
+<a href="docs/screenshots/01-imports.png"><img src="docs/screenshots/01-imports.png" width="900" alt="Imports tab: 10k, 500-row and 20-row imports completed"></a>
+
+**Products** — confidence, review reason and translation state per product; filters and bulk actions above.
+<a href="docs/screenshots/06-products.png"><img src="docs/screenshots/06-products.png" width="900" alt="Products tab filtered to needs review"></a>
+
+**Review** — source rows with cited cells highlighted and matched photos on the left, AI output and claims on the right. The same product in English and German:
+<a href="docs/screenshots/02-review.png"><img src="docs/screenshots/02-review.png" width="900" alt="Review screen, English"></a>
+<a href="docs/screenshots/03-review-de.png"><img src="docs/screenshots/03-review-de.png" width="900" alt="Review screen, German translations"></a>
+
+**Metrics** — cost, savings, latency and translation coverage. The tab aggregates every import on the instance (all three sample runs); the per-run 10k numbers are in the table above.
+<a href="docs/screenshots/04-metrics.png"><img src="docs/screenshots/04-metrics.png" width="900" alt="Metrics tab"></a>
+
+**Storefront** — the published catalog rendered in German, with localized title, description, attributes and price (prices keep the supplier's source currency; no FX conversion).
+<a href="docs/screenshots/05-storefront-product-de.png"><img src="docs/screenshots/05-storefront-product-de.png" width="900" alt="German storefront product page"></a>
+
+The 3–5 minute walkthrough is shared with the submission. It covers:
 
 1. **Upload tab** with a run in progress: live stage bar, done / needs-review / failed / pending counts, and the Cancel button.
 2. **"Paused — resuming in X min"** banner (run with `AI_PROVIDER=fake FAKE_AI_FAILURES=rate_limit:0.3` to trigger it on demand).
