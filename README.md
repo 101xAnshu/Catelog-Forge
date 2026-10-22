@@ -287,7 +287,7 @@ The eval harness found one real gap during development: a claim like "frost-proo
 | Groq free tier | 20 rows took 384 s, almost all of it rate-limit pauses | `small-20.csv`; 8k tokens/min |
 | Tokens per product (real models) | ≈ **2,667 input + 1,792 output** on the 500-row run and ≈ **3,069 / 2,092** on the 10k run (build + repair + DE & FR) at build batch size 1; ≈ **1,275 / 800** with 5-product build batches | `ai_calls` on the live runs |
 | Storefront p97.5, idle | **443 ms** product page / 811 ms collection, 79 / 42 req/s, 0 errors | autocannon 25 connections, 60 s, in-container against the live 2 vCPU host |
-| Storefront p97.5, during 10k import | **3,347 ms** collection, 21 req/s, 0 errors (idle: 811 ms / 42 req/s) | same load, run during the live real-provider 10,000-row import |
+| Storefront p97.5, during 10k import | **1,750 ms** collection, 21 req/s, 0 errors (idle: 811 ms / 42 req/s) | same load during a fake-provider 10,000-row import — CPU-saturation upper bound |
 | Cost per 1,000 products | **$1.21** on the 10k run ($4.18 ÷ 3,447); **$1.00** on the 500-row run | `ai_calls` per import (the Metrics tab averages every recorded call, evals included) |
 | Savings from model routing | **29%** on the 10k run ($4.18 actual vs $5.91 all-strong baseline); **32%** on the 500-row run | baseline vs actual, `ai_calls` |
 | Eval: category / material / hallucinated claims | **85.7% category exact (9.5% before the taxonomy fix), 100% material, 0% hallucinated, 90.1% claim precision, 76.2% grouping (v1)**; v2 matches the categories and trades precision for recall (77.4% vs 73.8%) | `bun run eval -- --prompt v1,v2`, 42 labelled products, live host |
