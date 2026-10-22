@@ -8,11 +8,11 @@ export const DEFAULT_COUNTRY_LOCALES: Array<[string, "de" | "fr"]> = [
   ["DE", "de"], ["AT", "de"], ["CH", "de"], ["LI", "de"], ["FR", "fr"], ["BE", "fr"], ["LU", "fr"], ["MC", "fr"],
 ];
 
-export const DEMO_EMAIL = "demo@catalogforge.dev";
-export const DEMO_PASSWORD = "demo1234";
-export const DEMO_API_KEY = "cf_demo_0123456789abcdef0123456789abcdef";
+export const DEMO_EMAIL = process.env.DEMO_EMAIL?.trim() || "demo@catalogforge.dev";
+export const DEMO_PASSWORD = process.env.DEMO_PASSWORD || "demo1234";
 
-/** Idempotent: demo store, user, API key and country→locale mapping. */
+/** Idempotent: demo store, user, optional API key and country→locale mapping.
+ *  The API key is only created when DEMO_API_KEY is set, so no key is ever committed. */
 export async function seed(): Promise<{ storeId: string }> {
   const { db, close } = createDb("script");
   try {
@@ -29,10 +29,13 @@ export async function seed(): Promise<{ storeId: string }> {
       .returning({ id: users.id });
     if (!user) throw new Error("seed: user not created");
     await db.insert(storeMembers).values({ storeId: store.id, userId: user.id, role: "owner" }).onConflictDoNothing();
-    await db
-      .insert(apiKeys)
-      .values({ storeId: store.id, name: "Demo key", keyHash: hashToken(DEMO_API_KEY), prefix: DEMO_API_KEY.slice(0, 8) })
-      .onConflictDoNothing();
+    const demoKey = process.env.DEMO_API_KEY?.trim();
+    if (demoKey) {
+      await db
+        .insert(apiKeys)
+        .values({ storeId: store.id, name: "Demo key", keyHash: hashToken(demoKey), prefix: demoKey.slice(0, 8) })
+        .onConflictDoNothing();
+    }
     await db
       .insert(countryLocales)
       .values(DEFAULT_COUNTRY_LOCALES.map(([countryCode, locale]) => ({ storeId: store.id, countryCode, locale })))

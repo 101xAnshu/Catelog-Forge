@@ -113,7 +113,7 @@ Provider selection: `AI_PROVIDER` if set, otherwise **OpenCode Go → Groq → f
 
 **Sample data:** `fixtures/` holds three sheets cut from the same real supplier export plus that supplier's photo folder, so every sheet works with the same zip: `small-20.csv` (20 rows → 7 products, all with photos), `messy-500.xlsx` (500 real rows, German headers on line 4, 365 products), `bulk-10000.csv` (10,000 rows → 3,447 products, 1,407 photos attach) and `photos.zip` (1,437 real photos: SKU-named, plus 15 `OLD-*`/5 `MISC-*` orphans, a text file named `.jpg`, a PDF named `.jpg` and three 4,200×3,000 photos). See [`fixtures/README.md`](fixtures/README.md) for the slice rules and the full list of real-world mess. The 11,576-row export itself is not tracked (supplier data); any sheet over **10,000 rows** is rejected by design with `TOO_MANY_ROWS`.
 
-**Public API:** the demo key is `cf_demo_0123456789abcdef0123456789abcdef` (see [Public API](#public-api)).
+**Public API:** after logging in, create a key under **Settings → API keys** (the submission email also includes a reviewer key). No API key is committed to this repo. See [Public API](#public-api).
 
 ## Tech stack & design decisions
 
@@ -236,12 +236,13 @@ Bonus — all levels:
 ### Public API
 
 ```bash
+export CF_API_KEY=cf_…   # Settings → API keys
 curl -X POST http://localhost:3000/api/v1/imports \
-  -H "Authorization: Bearer cf_demo_0123456789abcdef0123456789abcdef" \
+  -H "Authorization: Bearer $CF_API_KEY" \
   -F sheet=@fixtures/small-20.csv -F photos=@fixtures/photos.zip
 # → 202 {"id":"…","status":"queued"}
 
-curl http://localhost:3000/api/v1/imports/<id> -H "Authorization: Bearer cf_demo_…"
+curl http://localhost:3000/api/v1/imports/<id> -H "Authorization: Bearer $CF_API_KEY"
 ```
 
 ## Testing, evaluation & load testing

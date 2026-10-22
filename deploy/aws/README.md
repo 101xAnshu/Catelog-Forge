@@ -119,11 +119,13 @@ sudo docker compose up -d
 sudo docker compose ps
 ```
 
-First boot applies migrations, then starts the worker and the web app. `SEED_DEMO=false`, so the demo login is not created automatically — run the idempotent seed once to create the demo store, user and API key:
+First boot applies migrations, then starts the worker and the web app. `SEED_DEMO=false`, so the demo login is not created automatically — run the idempotent seed once to create the demo store and user:
 
 ```bash
-docker compose exec app bun packages/db/src/seed.ts   # demo@catalogforge.dev / demo1234 + cf_demo_… key
+docker compose exec app bun packages/db/src/seed.ts   # demo@catalogforge.dev / demo1234
 ```
+
+Set `DEMO_EMAIL` / `DEMO_PASSWORD` to override those defaults, and `DEMO_API_KEY` if you want the seed to create an API key (otherwise create one in **Settings → API keys**).
 
 `/api/v1/*` and `/api/exports` are exempt from basic auth on purpose: a request cannot carry Basic and Bearer credentials in the same `Authorization` header. Those paths still require an API key or a session inside the app; everything else (dashboard, storefront) stays behind the shared password.
 

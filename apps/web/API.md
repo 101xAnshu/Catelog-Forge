@@ -1,7 +1,6 @@
 # CatalogForge public API
 
-All endpoints take `Authorization: Bearer <api key>`. Create keys under **Settings → API keys**.
-Seeded demo key: `cf_demo_0123456789abcdef0123456789abcdef`. Every key is scoped to one store and can only see that store's data.
+All endpoints take `Authorization: Bearer <api key>`. Create keys under **Settings → API keys** (the submission email includes a reviewer key). Every key is scoped to one store and can only see that store's data.
 
 ## Start an import
 
