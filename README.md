@@ -346,13 +346,14 @@ Captured from the live demo after the real 10,000-row import (10,000 rows + 1,43
 **Storefront** — the published catalog rendered in German, with localized title, description, attributes and price (prices keep the supplier's source currency; no FX conversion).
 <a href="docs/screenshots/05-storefront-product-de.png"><img src="docs/screenshots/05-storefront-product-de.png" width="900" alt="German storefront product page"></a>
 
-The 3–5 minute walkthrough is shared with the submission. It covers:
+Walkthrough video (~2:20, silent): https://youtu.be/UWZFEn659BA — recorded locally in demo mode (`AI_PROVIDER=fake`, banner visible) so the resilience shots run fast. It covers:
 
-1. **Upload tab** with a run in progress: live stage bar, done / needs-review / failed / pending counts, and the Cancel button.
-2. **"Paused — resuming in X min"** banner (run with `AI_PROVIDER=fake FAKE_AI_FAILURES=rate_limit:0.3` to trigger it on demand).
-3. **Products tab**: photo thumbnails, SKU · variants, price-from, colour-coded confidence, review reasons.
-4. **Review page** side by side: source rows with cited cells highlighted + photos ↔ AI result, claims with sources (a struck-through rejected claim), EN/DE/FR tabs with an Out-of-date badge.
-5. **Storefront** product and collection pages in DE and FR (and an English fallback country), plus a phone-width view.
-6. **Metrics tab**: rates, model usage, cost over time, speed, translation coverage / out-of-date count.
-7. **Restart demo**: the worker killed mid-import and the run completing with counts adding up (GIF).
-8. **Settings**: webhook URL, API keys, country → language table.
+1. **Login + small import**: `small-20.csv` + `photos.zip` uploaded live, progress streaming to completion (7 products, orphans reported, counts add up).
+2. **Large bulk import**: the completed `bulk-10000.csv` run (3,447 products, 0 failed) with the Rows & errors breakdown.
+3. **Restart mid-import**: a 600-row import progressing, the worker killed, counts frozen, then resuming to 600/600 with no duplicates after a reload.
+4. **Rate-limit handling**: the "Paused — resuming in Xs (Rate limited by AI provider)" banner, then automatic resume and completion after retries.
+5. **Review screen**: source rows + photos beside the AI output, claims, EN/DE/FR tabs.
+6. **Storefront**: the published catalog in German and French.
+7. **Metrics tab**: cost, savings, latency and translation coverage.
+
+(The production proof for the full 10k run — 10,000 rows + 1,437 photos → 3,447 products in 4 h 24 min, $4.18 — is the live demo itself plus the numbers in [Technical write-up](#technical-write-up).)

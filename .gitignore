@@ -12,3 +12,4 @@ storage/
 playwright-report
 test-results
 *.tsbuildinfo
+recording/
